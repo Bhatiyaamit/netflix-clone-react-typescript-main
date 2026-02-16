@@ -6,11 +6,11 @@
   <h3 align="center">Netflix Clone</h3>
 
   <p align="center">
-    <a href="https://netflix-clone-react-typescript.vercel.app/">View Demo</a>
+    <a href="https://netflix-clone-react-typescript-main-one.vercel.app">View Demo</a>
     ·
-    <a href="https://github.com/crazy-man22/netflix-clone-react-typescript/issues">Report Bug</a>
+    <a href="https://github.com/Bhatiyaamit/netflix-clone-react-typescript-main/issues">Report Bug</a>
     ·
-    <a href="https://github.com/crazy-man22/netflix-clone-react-typescript/issues">Request Feature</a>
+    <a href="https://github.com/Bhatiyaamit/netflix-clone-react-typescript-main/issues">Request Feature</a>
   </p>
 </div>
 
@@ -21,12 +21,10 @@
       <a href="#prerequests">Prerequests</a>
     </li>
     <li>
-      <a href="#which-features-this-project-deals-with">Which features this project deals with</a>
+      <a href="#which-features-this-project-deal-with">Which features this project deal with</a>
     </li>
     <li><a href="#third-party-libraries-used-except-for-react-and-rtk">Third Party libraries used except for React and RTK</a></li>
-    <li>
-      <a href="#contact">Contact</a>
-    </li>
+   
   </ol>
 </details>
 
