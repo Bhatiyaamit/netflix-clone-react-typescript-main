@@ -26,7 +26,7 @@ interface TopTrailerProps {
 }
 
 export default function TopTrailer({ mediaType }: TopTrailerProps) {
-  const { data } = useGetVideosByMediaTypeAndCustomGenreQuery({
+  const { data, isSuccess } = useGetVideosByMediaTypeAndCustomGenreQuery({
     mediaType,
     apiString: "popular",
     page: 1,
@@ -58,12 +58,12 @@ export default function TopTrailer({ mediaType }: TopTrailerProps) {
   }, [isOffset]);
 
   useEffect(() => {
-    if (data && data.results) {
+    if (isSuccess && data && data.results) {
       const videos = data.results.filter((item) => !!item.backdrop_path);
       setVideo(videos[getRandomNumber(videos.length)]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, isSuccess]);
 
   useEffect(() => {
     if (video) {

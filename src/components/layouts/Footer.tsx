@@ -1,7 +1,19 @@
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+
+const footerLinks = [
+  ["Audio Description", "Investor Relations", "Legal Notices"],
+  ["Help Centre", "Jobs", "Cookie Preferences"],
+  ["Gift Cards", "Terms of Use", "Corporate Information"],
+  ["Media Centre", "Privacy", "Contact Us"],
+];
 
 export default function Footer() {
   return (
@@ -10,30 +22,74 @@ export default function Footer() {
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
-        height: 150,
         bgcolor: "inherit",
-        px: "60px",
+        px: { xs: "30px", md: "60px" },
+        pt: 6,
+        pb: 4,
       }}
     >
-      <Divider
-        component="div"
+      {/* Social Media Icons */}
+      <Stack direction="row" spacing={2.5} sx={{ mb: 3 }}>
+        {[
+          { icon: <FacebookIcon />, label: "Facebook" },
+          { icon: <InstagramIcon />, label: "Instagram" },
+          { icon: <TwitterIcon />, label: "Twitter" },
+          { icon: <YouTubeIcon />, label: "YouTube" },
+        ].map(({ icon, label }) => (
+          <IconButton
+            key={label}
+            aria-label={label}
+            sx={{
+              color: "white",
+              p: 0,
+              "&:hover": { color: "grey.400" },
+              "& .MuiSvgIcon-root": { fontSize: 28 },
+            }}
+          >
+            {icon}
+          </IconButton>
+        ))}
+      </Stack>
+
+      {/* Footer Links Grid */}
+      <Box
         sx={{
-          "::before, ::after": { top: "0%" },
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "repeat(2, 1fr)",
+            sm: "repeat(3, 1fr)",
+            md: "repeat(4, 1fr)",
+          },
+          gap: 1.5,
+          mb: 3,
         }}
       >
-        <Typography color="grey.700" variant="h6" component="span">
-          Developed by{" "}
+        {footerLinks.flat().map((linkText) => (
           <Link
-            target="_blank"
-            underline="none"
-            sx={{ color: "text.primary" }}
-            href="https://github.com/crazy-man22"
+            key={linkText}
+            href="#"
+            underline="hover"
+            sx={{
+              color: "grey.500",
+              fontSize: "13px",
+              "&:hover": { color: "grey.300" },
+            }}
           >
-            Crazy Man
+            {linkText}
           </Link>
-        </Typography>
-      </Divider>
+        ))}
+      </Box>
+
+      {/* Copyright */}
+      <Typography
+        sx={{
+          color: "grey.600",
+          fontSize: "12px",
+          mt: 1,
+        }}
+      >
+        © 1997-2026 Netflix, Inc.
+      </Typography>
     </Box>
   );
 }

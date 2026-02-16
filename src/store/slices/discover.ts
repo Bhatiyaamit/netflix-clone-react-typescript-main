@@ -45,10 +45,12 @@ const discoverSlice = createSlice({
           mediaType,
           itemKey,
         } = action.payload;
-        state[mediaType][itemKey].page = page;
-        state[mediaType][itemKey].results.push(...results);
-        state[mediaType][itemKey].total_pages = total_pages;
-        state[mediaType][itemKey].total_results = total_results;
+        if (state[mediaType]?.[itemKey]) {
+          state[mediaType][itemKey].page = page;
+          state[mediaType][itemKey].results.push(...results);
+          state[mediaType][itemKey].total_pages = total_pages;
+          state[mediaType][itemKey].total_results = total_results;
+        }
       }
     );
   },
@@ -126,6 +128,38 @@ const extendedApi = tmdbApi.injectEndpoints({
         params: { api_key: TMDB_V3_API_KEY },
       }),
     }),
+    getTrending: build.query<
+      PaginatedMovieResult,
+      { mediaType: string; timeWindow: string; page?: number }
+    >({
+      query: ({ mediaType, timeWindow, page = 1 }) => ({
+        url: `/trending/${mediaType}/${timeWindow}`,
+        params: { api_key: TMDB_V3_API_KEY, page },
+      }),
+    }),
+    getDiscoverByLanguage: build.query<
+      PaginatedMovieResult,
+      { mediaType: MEDIA_TYPE; language: string; page?: number; sortBy?: string }
+    >({
+      query: ({ mediaType, language, page = 1, sortBy = "popularity.desc" }) => ({
+        url: `/discover/${mediaType}`,
+        params: {
+          api_key: TMDB_V3_API_KEY,
+          with_original_language: language,
+          sort_by: sortBy,
+          page,
+        },
+      }),
+    }),
+    searchMulti: build.query<
+      PaginatedMovieResult,
+      { query: string; page?: number }
+    >({
+      query: ({ query, page = 1 }) => ({
+        url: `/search/multi`,
+        params: { api_key: TMDB_V3_API_KEY, query, page },
+      }),
+    }),
   }),
 });
 
@@ -138,4 +172,7 @@ export const {
   useLazyGetAppendedVideosQuery,
   useGetSimilarVideosQuery,
   useLazyGetSimilarVideosQuery,
+  useGetTrendingQuery,
+  useGetDiscoverByLanguageQuery,
+  useSearchMultiQuery,
 } = extendedApi;

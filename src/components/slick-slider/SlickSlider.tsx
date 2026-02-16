@@ -16,9 +16,6 @@ import { CustomGenre, Genre } from "src/types/Genre";
 import { Movie } from "src/types/Movie";
 import { PaginatedMovieResult } from "src/types/Common";
 
-
-
-
 const RootStyle = styled("div")(() => ({
   position: "relative",
   overflow: "inherit",
@@ -167,7 +164,7 @@ export default function SlickSlider({ data, genre }: SlickSliderProps) {
                 setShowExplore(false);
               }}
             >
-              {`${genre.name} Movies `}
+              {genre.name}
               <MotionContainer
                 open={showExplore}
                 initial="initial"

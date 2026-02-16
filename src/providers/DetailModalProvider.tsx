@@ -12,7 +12,7 @@ interface DetailType {
   mediaType?: MEDIA_TYPE;
 }
 export interface DetailModalConsumerProps {
-  detail: { mediaDetail?: MovieDetail } & DetailType;
+  detail: { mediaDetail?: MovieDetail; isLoading?: boolean } & DetailType;
   setDetailType: (newDetailType: DetailType) => void;
 }
 
@@ -26,7 +26,7 @@ export default function DetailModalProvider({
 }) {
   const location = useLocation();
   const [detail, setDetail] = useState<
-    { mediaDetail?: MovieDetail } & DetailType
+    { mediaDetail?: MovieDetail; isLoading?: boolean } & DetailType
   >(INITIAL_DETAIL_STATE);
 
   const [getAppendedVideos] = useLazyGetAppendedVideosQuery();
@@ -34,11 +34,37 @@ export default function DetailModalProvider({
   const handleChangeDetail = useCallback(
     async (newDetailType: { mediaType?: MEDIA_TYPE; id?: number }) => {
       if (!!newDetailType.id && newDetailType.mediaType) {
-        const response = await getAppendedVideos({
-          mediaType: newDetailType.mediaType,
-          id: newDetailType.id as number,
-        }).unwrap();
-        setDetail({ ...newDetailType, mediaDetail: response });
+        // Set loading state first
+        setDetail({ ...newDetailType, mediaDetail: undefined, isLoading: true });
+        try {
+          const response = await getAppendedVideos({
+            mediaType: newDetailType.mediaType,
+            id: newDetailType.id as number,
+          }).unwrap();
+          setDetail({ ...newDetailType, mediaDetail: response, isLoading: false });
+        } catch (error) {
+          // If the first media type fails, try the other one
+          const fallbackType =
+            newDetailType.mediaType === MEDIA_TYPE.Movie
+              ? MEDIA_TYPE.Tv
+              : MEDIA_TYPE.Movie;
+          try {
+            const response = await getAppendedVideos({
+              mediaType: fallbackType,
+              id: newDetailType.id as number,
+            }).unwrap();
+            setDetail({
+              ...newDetailType,
+              mediaType: fallbackType,
+              mediaDetail: response,
+              isLoading: false,
+            });
+          } catch {
+            // Both failed, close the modal
+            console.warn("Failed to load video details for id:", newDetailType.id);
+            setDetail(INITIAL_DETAIL_STATE);
+          }
+        }
       } else {
         setDetail(INITIAL_DETAIL_STATE);
       }

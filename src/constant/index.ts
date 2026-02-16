@@ -8,6 +8,13 @@ export const MAIN_PATH = {
   browse: "browse",
   genreExplore: "genre",
   watch: "watch",
+  shows: "shows",
+  movies: "movies",
+  newPopular: "new-popular",
+  myList: "my-list",
+  browseByLanguages: "browse-by-languages",
+  search: "search",
+  signin: "signin",
 };
 
 export const ARROW_MAX_WIDTH = 60;
@@ -18,6 +25,13 @@ export const COMMON_TITLES: CustomGenre[] = [
   { name: "Upcoming", apiString: "upcoming" },
 ];
 
+export const COMMON_TITLES_TV: CustomGenre[] = [
+  { name: "Popular", apiString: "popular" },
+  { name: "Top Rated", apiString: "top_rated" },
+  { name: "Airing Today", apiString: "airing_today" },
+  { name: "On The Air", apiString: "on_the_air" },
+];
+
 export const YOUTUBE_URL = "https://www.youtube.com/watch?v=";
 export const APP_BAR_HEIGHT = 70;
 
@@ -26,3 +40,4 @@ export const INITIAL_DETAIL_STATE = {
   mediaType: undefined,
   mediaDetail: undefined,
 };
+export const GOOGLE_CLIENT_ID = "881240855246-23s85i5kahm19qbrjtg1vmiockucqp8f.apps.googleusercontent.com";

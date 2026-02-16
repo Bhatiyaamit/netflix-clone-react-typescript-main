@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { googleLogout } from "@react-oauth/google";
+import { useNavigate, useLocation } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -11,19 +12,26 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import useOffSetTop from "src/hooks/useOffSetTop";
 import { APP_BAR_HEIGHT, MAIN_PATH } from "src/constant";
-import { useGetGenresQuery } from "src/store/slices/genre";
-import { MEDIA_TYPE } from "src/types/Common";
 import Logo from "../Logo";
 import SearchBox from "../SearchBox";
 import NetflixNavigationLink from "../NetflixNavigationLink";
 
+const NAV_LINKS = [
+  { label: "Home", path: `/${MAIN_PATH.browse}` },
+  { label: "Shows", path: `/${MAIN_PATH.shows}` },
+  { label: "Movies", path: `/${MAIN_PATH.movies}` },
+  { label: "New & Popular", path: `/${MAIN_PATH.newPopular}` },
+  { label: "My List", path: `/${MAIN_PATH.myList}` },
+  { label: "Browse by Languages", path: `/${MAIN_PATH.browseByLanguages}` },
+];
+
 const MainHeader = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const isOffset = useOffSetTop(APP_BAR_HEIGHT);
-  const { data: genres } = useGetGenresQuery(MEDIA_TYPE.Movie);
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -31,18 +39,22 @@ const MainHeader = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
-  const [anchorElBrowse, setAnchorElBrowse] = React.useState<null | HTMLElement>(
-    null
-  );
+
+  // User Profile Picture
+  const [profilePicture, setProfilePicture] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const storedPic = localStorage.getItem("userPicture");
+    if (storedPic) {
+      setProfilePicture(storedPic);
+    }
+  }, []);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
-  };
-  const handleOpenBrowseMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElBrowse(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
@@ -53,20 +65,21 @@ const MainHeader = () => {
     setAnchorElUser(null);
   };
 
-  const handleCloseBrowseMenu = () => {
-    setAnchorElBrowse(null);
+  const handleSignOut = () => {
+    handleCloseUserMenu();
+    googleLogout();
+    localStorage.removeItem("userPicture");
+    navigate(`/${MAIN_PATH.signin}`);
   };
 
-  const handleGenreClick = (genreId: number | string) => {
-    navigate(`/${MAIN_PATH.genreExplore}/${genreId}`);
-    handleCloseBrowseMenu();
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
   return (
     <AppBar
       sx={{
-        // px: "4%",
-        px: "60px",
+        px: { xs: "16px", md: "60px" },
         height: APP_BAR_HEIGHT,
         backgroundImage: "none",
         ...(isOffset
@@ -80,10 +93,11 @@ const MainHeader = () => {
       <Toolbar disableGutters>
         <Logo sx={{ mr: { xs: 2, sm: 4 } }} />
 
+        {/* Mobile hamburger menu */}
         <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
           <IconButton
             size="large"
-            aria-label="account of current user"
+            aria-label="navigation menu"
             aria-controls="menu-appbar"
             aria-haspopup="true"
             onClick={handleOpenNavMenu}
@@ -107,25 +121,39 @@ const MainHeader = () => {
             onClose={handleCloseNavMenu}
             sx={{
               display: { xs: "block", md: "none" },
+              "& .MuiPaper-root": {
+                bgcolor: "rgba(0, 0, 0, 0.95)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+              },
             }}
           >
-            <MenuItem onClick={() => { navigate(`/${MAIN_PATH.browse}`); handleCloseNavMenu(); }}>
-              <Typography textAlign="center">Home</Typography>
-            </MenuItem>
-            <MenuItem>
-              <Typography textAlign="center" sx={{ fontWeight: 600 }}>Browse</Typography>
-            </MenuItem>
-            {genres?.map((genre) => (
-              <MenuItem 
-                key={genre.id} 
-                onClick={() => { handleGenreClick(genre.id); handleCloseNavMenu(); }}
-                sx={{ pl: 4 }}
+            {NAV_LINKS.map((link) => (
+              <MenuItem
+                key={link.label}
+                onClick={() => {
+                  navigate(link.path);
+                  handleCloseNavMenu();
+                }}
+                sx={{
+                  bgcolor: isActive(link.path)
+                    ? "rgba(255, 255, 255, 0.1)"
+                    : "transparent",
+                }}
               >
-                <Typography textAlign="center">{genre.name}</Typography>
+                <Typography
+                  sx={{
+                    color: "text.primary",
+                    fontWeight: isActive(link.path) ? 700 : 400,
+                  }}
+                >
+                  {link.label}
+                </Typography>
               </MenuItem>
             ))}
           </Menu>
         </Box>
+
+        {/* Mobile Netflix text - hidden since Logo component already shows */}
         <Typography
           variant="h5"
           noWrap
@@ -133,7 +161,7 @@ const MainHeader = () => {
           href=""
           sx={{
             mr: 2,
-            display: { xs: "flex", md: "none" },
+            display: "none",
             flexGrow: 1,
             fontWeight: 700,
             color: "inherit",
@@ -142,72 +170,63 @@ const MainHeader = () => {
         >
           Netflix
         </Typography>
+
+        {/* Desktop nav links */}
         <Stack
           direction="row"
-          spacing={3}
+          spacing={2.5}
           sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
         >
-          <NetflixNavigationLink
-            to={`/${MAIN_PATH.browse}`}
-            variant="subtitle1"
-          >
-            Home
-          </NetflixNavigationLink>
-          
-          <Box
-            onClick={handleOpenBrowseMenu}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-              "&:hover": { opacity: 0.7 },
-            }}
-          >
-            <Typography variant="subtitle1" sx={{ color: "text.primary" }}>
-              Browse
-            </Typography>
-            <ArrowDropDownIcon sx={{ color: "text.primary" }} />
-          </Box>
-          
-          <Menu
-            anchorEl={anchorElBrowse}
-            open={Boolean(anchorElBrowse)}
-            onClose={handleCloseBrowseMenu}
-            sx={{
-              mt: 1,
-              "& .MuiPaper-root": {
-                bgcolor: "rgba(0, 0, 0, 0.9)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-              },
-            }}
-          >
-            {genres?.map((genre) => (
-              <MenuItem
-                key={genre.id}
-                onClick={() => handleGenreClick(genre.id)}
-                sx={{
-                  "&:hover": {
-                    bgcolor: "rgba(255, 255, 255, 0.1)",
-                  },
-                }}
-              >
-                <Typography sx={{ color: "text.primary" }}>
-                  {genre.name}
-                </Typography>
-              </MenuItem>
-            ))}
-          </Menu>
+          {NAV_LINKS.map((link) => (
+            <NetflixNavigationLink
+              key={link.label}
+              to={link.path}
+              variant="subtitle2"
+              sx={{
+                fontWeight: isActive(link.path) ? 700 : 400,
+                color: isActive(link.path)
+                  ? "white"
+                  : "rgba(255, 255, 255, 0.7)",
+                whiteSpace: "nowrap",
+                fontSize: "0.82rem",
+                transition: "color 0.3s",
+                "&:hover": {
+                  color: "rgba(255, 255, 255, 0.9)",
+                },
+              }}
+            >
+              {link.label}
+            </NetflixNavigationLink>
+          ))}
         </Stack>
 
-        <Box sx={{ flexGrow: 0, display: "flex", gap: 2 }}>
+        {/* Right side: search, notifications, avatar */}
+        <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center", gap: 1.5 }}>
           <SearchBox />
+
+          {/* Notification Bell */}
+          <IconButton sx={{ color: "white", p: 0.5 }}>
+            <NotificationsNoneIcon />
+          </IconButton>
+
+          {/* Avatar + dropdown */}
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="user_avatar" src="/avatar.png" variant="rounded" />
+              <Avatar
+                alt="user_avatar"
+                src={profilePicture || "/assets/avatar.png"}
+                variant="rounded"
+              />
             </IconButton>
           </Tooltip>
           <Menu
-            sx={{ mt: "45px" }}
+            sx={{
+              mt: "45px",
+              "& .MuiPaper-root": {
+                bgcolor: "rgba(0, 0, 0, 0.9)",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+              },
+            }}
             id="avatar-menu"
             anchorEl={anchorElUser}
             anchorOrigin={{
@@ -222,11 +241,27 @@ const MainHeader = () => {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            {["Account", "Logout"].map((setting) => (
-              <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{setting}</Typography>
-              </MenuItem>
-            ))}
+            {["Manage Profiles", "Transfer Profile", "Account", "Help Centre"].map(
+              (setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center" sx={{ color: "text.primary" }}>
+                    {setting}
+                  </Typography>
+                </MenuItem>
+              )
+            )}
+            <MenuItem
+              onClick={handleSignOut}
+              sx={{
+                borderTop: "1px solid rgba(255,255,255,0.15)",
+                mt: 1,
+                pt: 1.5,
+              }}
+            >
+              <Typography textAlign="center" sx={{ color: "text.primary" }}>
+                Sign out of Netflix
+              </Typography>
+            </MenuItem>
           </Menu>
         </Box>
       </Toolbar>

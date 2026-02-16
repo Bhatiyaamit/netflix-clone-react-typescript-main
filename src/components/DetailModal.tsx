@@ -1,4 +1,5 @@
 import { forwardRef, useCallback, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
@@ -8,9 +9,11 @@ import Typography from "@mui/material/Typography";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import Slide from "@mui/material/Slide";
+import CircularProgress from "@mui/material/CircularProgress";
 import { TransitionProps } from "@mui/material/transitions";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
+import CheckIcon from "@mui/icons-material/Check";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
@@ -27,6 +30,7 @@ import { useDetailModal } from "src/providers/DetailModalProvider";
 import { useGetSimilarVideosQuery } from "src/store/slices/discover";
 import { MEDIA_TYPE } from "src/types/Common";
 import VideoJSPlayer from "./watch/VideoJSPlayer";
+import { toggleMyList, selectIsInMyList } from "src/store/slices/myList";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -39,10 +43,18 @@ const Transition = forwardRef(function Transition(
 
 export default function DetailModal() {
   const { detail, setDetailType } = useDetailModal();
-  const { data: similarVideos } = useGetSimilarVideosQuery(
-    { mediaType: detail.mediaType ?? MEDIA_TYPE.Movie, id: detail.id ?? 0 },
-    { skip: !detail.id }
+  const dispatch = useDispatch();
+  const isInMyList = useSelector(
+    selectIsInMyList(
+      detail.id ?? 0,
+      detail.mediaType ?? MEDIA_TYPE.Movie
+    )
   );
+  const { data: similarVideos, isLoading: isSimilarLoading } =
+    useGetSimilarVideosQuery(
+      { mediaType: detail.mediaType ?? MEDIA_TYPE.Movie, id: detail.id ?? 0 },
+      { skip: !detail.id || !detail.mediaType }
+    );
   const playerRef = useRef<Player | null>(null);
   const [muted, setMuted] = useState(true);
 
@@ -58,7 +70,59 @@ export default function DetailModal() {
     }
   }, []);
 
+  const handleClose = useCallback(() => {
+    setDetailType({ mediaType: undefined, id: undefined });
+  }, [setDetailType]);
+
+  // Show loading spinner while fetching detail
+  if (detail.isLoading) {
+    return (
+      <Dialog
+        fullWidth
+        scroll="body"
+        maxWidth="md"
+        open={true}
+        id="detail_dialog"
+        TransitionComponent={Transition}
+      >
+        <DialogContent
+          sx={{
+            p: 0,
+            bgcolor: "#181818",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: 400,
+            position: "relative",
+          }}
+        >
+          <IconButton
+            onClick={handleClose}
+            sx={{
+              top: 15,
+              right: 15,
+              position: "absolute",
+              bgcolor: "#181818",
+              width: 40,
+              height: 40,
+              "&:hover": { bgcolor: "primary.main" },
+              zIndex: 10,
+            }}
+          >
+            <CloseIcon sx={{ color: "white", fontSize: 22 }} />
+          </IconButton>
+          <CircularProgress sx={{ color: "red" }} />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   if (detail.mediaDetail) {
+    // Handle both movie and TV show data - TV uses "name" and "first_air_date"
+    const md = detail.mediaDetail as any;
+    const displayTitle = md.title || md.name || "";
+    const displayDate = md.release_date || md.first_air_date || "";
+
     return (
       <Dialog
         fullWidth
@@ -97,7 +161,7 @@ export default function DetailModal() {
                     {
                       type: "video/youtube",
                       src: `https://www.youtube.com/watch?v=${
-                        detail.mediaDetail?.videos.results[0]?.key ||
+                        detail.mediaDetail?.videos?.results?.[0]?.key ||
                         "L3oOldViIgY"
                       }`,
                     },
@@ -135,9 +199,7 @@ export default function DetailModal() {
                 }}
               />
               <IconButton
-                onClick={() => {
-                  setDetailType({ mediaType: undefined, id: undefined });
-                }}
+                onClick={handleClose}
                 sx={{
                   top: 15,
                   right: 15,
@@ -164,12 +226,26 @@ export default function DetailModal() {
                 }}
               >
                 <MaxLineTypography variant="h4" maxLine={1} sx={{ mb: 2 }}>
-                  {detail.mediaDetail?.title}
+                  {displayTitle}
                 </MaxLineTypography>
                 <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
                   <PlayButton sx={{ color: "black", py: 0 }} />
-                  <NetflixIconButton>
-                    <AddIcon />
+                  <NetflixIconButton
+                    onClick={() => {
+                      if (detail.id && detail.mediaType) {
+                        dispatch(
+                          toggleMyList({
+                            id: detail.id,
+                            mediaType: detail.mediaType,
+                            title: displayTitle,
+                            backdrop_path: md.backdrop_path || null,
+                            poster_path: md.poster_path || null,
+                          })
+                        );
+                      }
+                    }}
+                  >
+                    {isInMyList ? <CheckIcon /> : <AddIcon />}
                   </NetflixIconButton>
                   <NetflixIconButton>
                     <ThumbUpOffAltIcon />
@@ -197,7 +273,7 @@ export default function DetailModal() {
                           sx={{ color: "success.main" }}
                         >{`${getRandomNumber(100)}% Match`}</Typography>
                         <Typography variant="body2">
-                          {detail.mediaDetail?.release_date.substring(0, 4)}
+                          {displayDate ? displayDate.substring(0, 4) : ""}
                         </Typography>
                         <AgeLimitChip label={`${getRandomNumber(20)}+`} />
                         <Typography variant="subtitle2">{`${formatMinuteToReadable(
@@ -216,20 +292,35 @@ export default function DetailModal() {
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
                       <Typography variant="body2" sx={{ my: 1 }}>
-                        {`Genres : ${detail.mediaDetail?.genres
-                          .map((g) => g.name)
-                          .join(", ")}`}
+                        {`Genres : ${
+                          detail.mediaDetail?.genres
+                            ? detail.mediaDetail.genres
+                                .map((g) => g.name)
+                                .join(", ")
+                            : ""
+                        }`}
                       </Typography>
                       <Typography variant="body2" sx={{ my: 1 }}>
-                        {`Available in : ${detail.mediaDetail?.spoken_languages
-                          .map((l) => l.name)
-                          .join(", ")}`}
+                        {`Available in : ${
+                          detail.mediaDetail?.spoken_languages
+                            ? detail.mediaDetail.spoken_languages
+                                .map((l) => l.name)
+                                .join(", ")
+                            : ""
+                        }`}
                       </Typography>
                     </Grid>
                   </Grid>
                 </Container>
               </Box>
             </Box>
+
+            {/* Similar videos / More Like This */}
+            {isSimilarLoading && (
+              <Box sx={{ py: 4, textAlign: "center" }}>
+                <CircularProgress size={30} sx={{ color: "red" }} />
+              </Box>
+            )}
             {similarVideos && similarVideos.results.length > 0 && (
               <Container
                 sx={{

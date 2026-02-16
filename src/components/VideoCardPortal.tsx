@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -7,6 +8,7 @@ import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import AddIcon from "@mui/icons-material/Add";
+import CheckIcon from "@mui/icons-material/Check";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Movie } from "src/types/Movie";
 import { usePortal } from "src/providers/PortalProvider";
@@ -21,6 +23,7 @@ import { useGetConfigurationQuery } from "src/store/slices/configuration";
 import { MEDIA_TYPE } from "src/types/Common";
 import { useGetGenresQuery } from "src/store/slices/genre";
 import { MAIN_PATH } from "src/constant";
+import { toggleMyList, selectIsInMyList } from "src/store/slices/myList";
 
 interface VideoCardModalProps {
   video: Movie;
@@ -32,9 +35,17 @@ export default function VideoCardModal({
   anchorElement,
 }: VideoCardModalProps) {
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // Determine media type based on current route
+  const currentMediaType = location.pathname.startsWith(`/${MAIN_PATH.shows}`)
+    ? MEDIA_TYPE.Tv
+    : MEDIA_TYPE.Movie;
+
+  const dispatch = useDispatch();
+  const isInMyList = useSelector(selectIsInMyList(video.id, currentMediaType));
   const { data: configuration } = useGetConfigurationQuery(undefined);
-  const { data: genres } = useGetGenresQuery(MEDIA_TYPE.Movie);
+  const { data: genres } = useGetGenresQuery(currentMediaType);
   const setPortal = usePortal();
   const rect = anchorElement.getBoundingClientRect();
   const { setDetailType } = useDetailModal();
@@ -85,7 +96,7 @@ export default function VideoCardModal({
             sx={{ width: "80%", fontWeight: 700 }}
             variant="h6"
           >
-            {video.title}
+            {video.title || (video as any).name}
           </MaxLineTypography>
           <div style={{ flexGrow: 1 }} />
           <NetflixIconButton>
@@ -102,8 +113,20 @@ export default function VideoCardModal({
             >
               <PlayCircleIcon sx={{ width: 40, height: 40 }} />
             </NetflixIconButton>
-            <NetflixIconButton>
-              <AddIcon />
+            <NetflixIconButton
+              onClick={() => {
+                dispatch(
+                  toggleMyList({
+                    id: video.id,
+                    mediaType: currentMediaType,
+                    title: video.title || (video as any).name || "",
+                    backdrop_path: video.backdrop_path,
+                    poster_path: video.poster_path || null,
+                  })
+                );
+              }}
+            >
+              {isInMyList ? <CheckIcon /> : <AddIcon />}
             </NetflixIconButton>
             <NetflixIconButton>
               <ThumbUpOffAltIcon />
@@ -111,7 +134,10 @@ export default function VideoCardModal({
             <div style={{ flexGrow: 1 }} />
             <NetflixIconButton
               onClick={() => {
-                setDetailType({ mediaType: MEDIA_TYPE.Movie, id: video.id });
+                setDetailType({
+                  mediaType: currentMediaType,
+                  id: video.id,
+                });
               }}
             >
               <ExpandMoreIcon />
@@ -131,7 +157,9 @@ export default function VideoCardModal({
           {genres && (
             <GenreBreadcrumbs
               genres={genres
-                .filter((genre) => video.genre_ids.includes(genre.id))
+                .filter((genre) =>
+                  video.genre_ids?.includes(genre.id)
+                )
                 .map((genre) => genre.name)}
             />
           )}

@@ -12,6 +12,8 @@ import { extendedApi } from "./store/slices/configuration";
 import palette from "./theme/palette";
 import router from "./routes";
 import MainLoadingScreen from "./components/MainLoadingScreen";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GOOGLE_CLIENT_ID } from "./constant";
 
 store.dispatch(extendedApi.endpoints.getConfiguration.initiate(undefined));
 
@@ -19,14 +21,16 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <Provider store={store}>
-    <React.StrictMode>
-      <ThemeProvider theme={createTheme({ palette })}>
-        <RouterProvider
-          router={router}
-          fallbackElement={<MainLoadingScreen />}
-        />
-      </ThemeProvider>
-    </React.StrictMode>
-  </Provider>
+  <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+    <Provider store={store}>
+      <React.StrictMode>
+        <ThemeProvider theme={createTheme({ palette })}>
+          <RouterProvider
+            router={router}
+            fallbackElement={<MainLoadingScreen />}
+          />
+        </ThemeProvider>
+      </React.StrictMode>
+    </Provider>
+  </GoogleOAuthProvider>
 );

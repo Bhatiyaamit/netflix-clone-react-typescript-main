@@ -76,7 +76,7 @@ export default function SimilarVideoCard({ video }: SimilarVideoCardProps) {
               <Stack direction="row" spacing={1} alignItems="center">
                 <AgeLimitChip label={`${getRandomNumber(20)}+`} />
                 <Typography variant="body2">
-                  {video.release_date.substring(0, 4)}
+                  {video.release_date ? video.release_date.substring(0, 4) : ""}
                 </Typography>
               </Stack>
             </div>

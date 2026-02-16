@@ -1,4 +1,5 @@
 import { TMDB_V3_API_KEY } from "src/constant";
+import { Language } from "src/types/Common";
 import { tmdbApi } from "./apiSlice";
 
 type ConfigurationType = {
@@ -22,7 +23,14 @@ export const extendedApi = tmdbApi.injectEndpoints({
         params: { api_key: TMDB_V3_API_KEY },
       }),
     }),
+    getLanguages: build.query<Language[], void>({
+      query: () => ({
+        url: "/configuration/languages",
+        params: { api_key: TMDB_V3_API_KEY },
+      }),
+    }),
   }),
 });
 
-export const { useGetConfigurationQuery } = extendedApi;
+export const { useGetConfigurationQuery, useGetLanguagesQuery } = extendedApi;
+
