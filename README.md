@@ -70,7 +70,7 @@
 
 ## Third Party libraries used except for React and RTK
 
-- [react-router-dom@v6.9]([https://reactrouter.com/en/main](https://reactrouter.com/home))
+- [react-router-dom](https://reactrouter.com/home)
 - [MUI(Material UI)](https://mui.com/)
 - [framer-motion](https://www.framer.com/docs/)
 - [video.js](https://videojs.com)
