@@ -3,12 +3,16 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import AddIcon from "@mui/icons-material/Add";
+import CheckIcon from "@mui/icons-material/Check";
+import { useDispatch, useSelector } from "react-redux";
 import { Movie } from "src/types/Movie";
 import NetflixIconButton from "./NetflixIconButton";
 import MaxLineTypography from "./MaxLineTypography";
 import { formatMinuteToReadable, getRandomNumber } from "src/utils/common";
 import AgeLimitChip from "./AgeLimitChip";
 import { useGetConfigurationQuery } from "src/store/slices/configuration";
+import { toggleMyList, selectIsInMyList } from "src/store/slices/myList";
+import { MEDIA_TYPE } from "src/types/Common";
 
 interface SimilarVideoCardProps {
   video: Movie;
@@ -16,6 +20,29 @@ interface SimilarVideoCardProps {
 
 export default function SimilarVideoCard({ video }: SimilarVideoCardProps) {
   const { data: configuration } = useGetConfigurationQuery(undefined);
+  const dispatch = useDispatch();
+
+  // Handle both movie and TV show - TV uses "name" instead of "title"
+  const displayTitle = (video as any).title || (video as any).name || "";
+
+  // Determine media type - if it has "first_air_date", it's a TV show
+  const mediaType = (video as any).first_air_date
+    ? MEDIA_TYPE.Tv
+    : MEDIA_TYPE.Movie;
+
+  const isInMyList = useSelector(selectIsInMyList(video.id, mediaType));
+
+  const handleToggleMyList = () => {
+    dispatch(
+      toggleMyList({
+        id: video.id,
+        mediaType,
+        title: displayTitle,
+        backdrop_path: video.backdrop_path || null,
+        poster_path: video.poster_path || null,
+      }),
+    );
+  };
 
   return (
     <Card>
@@ -42,7 +69,7 @@ export default function SimilarVideoCard({ video }: SimilarVideoCardProps) {
           }}
         >
           <Typography variant="subtitle2">{`${formatMinuteToReadable(
-            getRandomNumber(180)
+            getRandomNumber(180),
           )}`}</Typography>
         </div>
         <div
@@ -61,7 +88,7 @@ export default function SimilarVideoCard({ video }: SimilarVideoCardProps) {
             sx={{ width: "80%", fontWeight: 700 }}
             variant="subtitle1"
           >
-            {video.title}
+            {displayTitle}
           </MaxLineTypography>
         </div>
       </div>
@@ -81,8 +108,8 @@ export default function SimilarVideoCard({ video }: SimilarVideoCardProps) {
               </Stack>
             </div>
             <div style={{ flexGrow: 1 }} />
-            <NetflixIconButton>
-              <AddIcon />
+            <NetflixIconButton onClick={handleToggleMyList}>
+              {isInMyList ? <CheckIcon /> : <AddIcon />}
             </NetflixIconButton>
           </Stack>
           <MaxLineTypography maxLine={4} variant="subtitle2">

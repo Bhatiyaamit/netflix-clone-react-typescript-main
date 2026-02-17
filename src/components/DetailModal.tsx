@@ -31,12 +31,13 @@ import { useGetSimilarVideosQuery } from "src/store/slices/discover";
 import { MEDIA_TYPE } from "src/types/Common";
 import VideoJSPlayer from "./watch/VideoJSPlayer";
 import { toggleMyList, selectIsInMyList } from "src/store/slices/myList";
+import { useTranslation } from "react-i18next";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement<any, any>;
   },
-  ref: React.Ref<unknown>
+  ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -45,18 +46,16 @@ export default function DetailModal() {
   const { detail, setDetailType } = useDetailModal();
   const dispatch = useDispatch();
   const isInMyList = useSelector(
-    selectIsInMyList(
-      detail.id ?? 0,
-      detail.mediaType ?? MEDIA_TYPE.Movie
-    )
+    selectIsInMyList(detail.id ?? 0, detail.mediaType ?? MEDIA_TYPE.Movie),
   );
   const { data: similarVideos, isLoading: isSimilarLoading } =
     useGetSimilarVideosQuery(
       { mediaType: detail.mediaType ?? MEDIA_TYPE.Movie, id: detail.id ?? 0 },
-      { skip: !detail.id || !detail.mediaType }
+      { skip: !detail.id || !detail.mediaType },
     );
   const playerRef = useRef<Player | null>(null);
   const [muted, setMuted] = useState(true);
+  const { t } = useTranslation();
 
   const handleReady = useCallback((player: Player) => {
     playerRef.current = player;
@@ -240,7 +239,7 @@ export default function DetailModal() {
                             title: displayTitle,
                             backdrop_path: md.backdrop_path || null,
                             poster_path: md.poster_path || null,
-                          })
+                          }),
                         );
                       }
                     }}
@@ -271,13 +270,13 @@ export default function DetailModal() {
                         <Typography
                           variant="subtitle1"
                           sx={{ color: "success.main" }}
-                        >{`${getRandomNumber(100)}% Match`}</Typography>
+                        >{`${getRandomNumber(100)}% ${t("detail.match")}`}</Typography>
                         <Typography variant="body2">
                           {displayDate ? displayDate.substring(0, 4) : ""}
                         </Typography>
                         <AgeLimitChip label={`${getRandomNumber(20)}+`} />
                         <Typography variant="subtitle2">{`${formatMinuteToReadable(
-                          getRandomNumber(180)
+                          getRandomNumber(180),
                         )}`}</Typography>
                         <QualityChip label="HD" />
                       </Stack>
@@ -292,7 +291,7 @@ export default function DetailModal() {
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
                       <Typography variant="body2" sx={{ my: 1 }}>
-                        {`Genres : ${
+                        {`${t("detail.genres")} : ${
                           detail.mediaDetail?.genres
                             ? detail.mediaDetail.genres
                                 .map((g) => g.name)
@@ -301,7 +300,7 @@ export default function DetailModal() {
                         }`}
                       </Typography>
                       <Typography variant="body2" sx={{ my: 1 }}>
-                        {`Available in : ${
+                        {`${t("detail.availableIn")} : ${
                           detail.mediaDetail?.spoken_languages
                             ? detail.mediaDetail.spoken_languages
                                 .map((l) => l.name)
@@ -329,7 +328,7 @@ export default function DetailModal() {
                 }}
               >
                 <Typography variant="h6" sx={{ mb: 2 }}>
-                  More Like This
+                  {t("detail.moreLikeThis")}
                 </Typography>
                 <Grid container spacing={2}>
                   {similarVideos.results.map((sm) => (

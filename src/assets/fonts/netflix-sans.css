@@ -1,0 +1,42 @@
+/* Netflix Sans Font Family */
+/* Place your Netflix Sans font files (.woff2, .woff) in this directory */
+
+@font-face {
+  font-family: "Netflix Sans";
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src:
+    url("./NetflixSans-Light.woff2") format("woff2"),
+    url("./NetflixSans-Light.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Netflix Sans";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src:
+    url("./NetflixSans-Regular.woff2") format("woff2"),
+    url("./NetflixSans-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Netflix Sans";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src:
+    url("./NetflixSans-Medium.woff2") format("woff2"),
+    url("./NetflixSans-Medium.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Netflix Sans";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src:
+    url("./NetflixSans-Bold.woff2") format("woff2"),
+    url("./NetflixSans-Bold.woff") format("woff");
+}

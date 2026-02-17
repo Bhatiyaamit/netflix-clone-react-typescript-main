@@ -19,10 +19,23 @@ import axios from "axios";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
 import { MAIN_PATH } from "src/constant";
+import { useTranslation } from "react-i18next";
+
+const SIGNIN_FOOTER_LINK_KEYS = [
+  "footer.faq",
+  "footer.helpCenter",
+  "footer.termsOfUse",
+  "footer.privacy",
+  "footer.cookiePreferences",
+  "footer.corporateInformation",
+  "footer.cancelMembership",
+  "footer.netflixShop",
+  "footer.impressum",
+] as const;
 
 export function Component() {
   const [showPassword, setShowPassword] = useState(false);
-  const [language, setLanguage] = useState("en");
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   const login = useGoogleLogin({
@@ -32,11 +45,11 @@ export function Component() {
           "https://www.googleapis.com/oauth2/v3/userinfo",
           {
             headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-          }
+          },
         );
         // Persist user picture for MainHeader
         if (userInfo.data.picture) {
-           localStorage.setItem('userPicture', userInfo.data.picture);
+          localStorage.setItem("userPicture", userInfo.data.picture);
         }
         navigate(`/${MAIN_PATH.browse}`);
       } catch (error) {
@@ -48,7 +61,9 @@ export function Component() {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
   };
 
@@ -59,7 +74,8 @@ export function Component() {
         width: "100%",
         position: "relative",
         bgcolor: "#000",
-        backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/assets/signin-bg.png')",
+        backgroundImage:
+          "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/assets/signin-bg.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -73,7 +89,8 @@ export function Component() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%)",
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%)",
           zIndex: 1,
         },
       }}
@@ -87,15 +104,15 @@ export function Component() {
         }}
       >
         <RouterLink to="/">
-            <Box
-                component="img"
-                src="/assets/netflix-logo.png"
-                alt="Netflix"
-                sx={{
-                height: { xs: 24, sm: 30, md: 45 },
-                width: "auto",
-                }}
-            />
+          <Box
+            component="img"
+            src="/assets/netflix-logo.png"
+            alt="Netflix"
+            sx={{
+              height: { xs: 24, sm: 30, md: 45 },
+              width: "auto",
+            }}
+          />
         </RouterLink>
       </Box>
 
@@ -122,13 +139,13 @@ export function Component() {
           }}
         >
           <Typography variant="h4" component="h1" fontWeight="700" mb={3}>
-            Sign In
+            {t("signIn.title")}
           </Typography>
 
           <Stack spacing={2}>
             <TextField
               variant="filled"
-              label="Email or Phone Number"
+              label={t("signIn.emailLabel")}
               fullWidth
               InputLabelProps={{
                 style: { color: "#8c8c8c" },
@@ -149,7 +166,7 @@ export function Component() {
 
             <TextField
               variant="filled"
-              label="Password"
+              label={t("signIn.passwordLabel")}
               type={showPassword ? "text" : "password"}
               fullWidth
               InputLabelProps={{
@@ -196,7 +213,7 @@ export function Component() {
                 "&:hover": { bgcolor: "#f40612" },
               }}
             >
-              Sign In
+              {t("signIn.signInButton")}
             </Button>
 
             <Button
@@ -215,7 +232,7 @@ export function Component() {
                 "&:hover": { bgcolor: "#e6e6e6" },
               }}
             >
-              Sign In with Google
+              {t("signIn.signInWithGoogle")}
             </Button>
 
             <Stack
@@ -236,26 +253,29 @@ export function Component() {
                     }}
                   />
                 }
-                label={<Typography fontSize="0.8rem">Remember me</Typography>}
+                label={
+                  <Typography fontSize="0.8rem">
+                    {t("signIn.rememberMe")}
+                  </Typography>
+                }
               />
               <Link href="#" underline="hover" color="inherit">
-                Need help?
+                {t("signIn.needHelp")}
               </Link>
             </Stack>
           </Stack>
 
           <Box mt={4}>
             <Typography color="#737373" fontSize="1rem">
-              New to Netflix?{" "}
+              {t("signIn.newToNetflix")}{" "}
               <Link href="#" underline="hover" color="#fff" fontWeight="500">
-                Sign up now.
+                {t("signIn.signUpNow")}
               </Link>
             </Typography>
             <Typography color="#8c8c8c" fontSize="0.8rem" mt={2}>
-              This page is protected by Google reCAPTCHA to ensure you're not a
-              bot.{" "}
+              {t("signIn.recaptcha")}{" "}
               <Link href="#" underline="hover" color="#0071eb">
-                Learn more.
+                {t("signIn.learnMore")}
               </Link>
             </Typography>
           </Box>
@@ -273,7 +293,7 @@ export function Component() {
           mt: "auto",
         }}
       >
-        <Typography mb={1}>Questions? Contact us.</Typography>
+        <Typography mb={1}>{t("signIn.questionsContact")}</Typography>
         <Box
           sx={{
             display: "grid",
@@ -283,38 +303,30 @@ export function Component() {
             mb: 2,
           }}
         >
-          {[
-            "FAQ",
-            "Help Center",
-            "Terms of Use",
-            "Privacy",
-            "Cookie Preferences",
-            "Corporate Information",
-            "Cancel Membership",
-            "Netflix Shop",
-            "Impressum",
-          ].map((text) => (
-            <Link key={text} href="#" underline="hover" color="inherit">
-              {text}
+          {SIGNIN_FOOTER_LINK_KEYS.map((key) => (
+            <Link key={key} href="#" underline="hover" color="inherit">
+              {t(key)}
             </Link>
           ))}
         </Box>
 
         <Select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
+          value={i18n.language}
+          onChange={(e) => i18n.changeLanguage(e.target.value)}
           size="small"
           startAdornment={
             <InputAdornment position="start">
               <LanguageIcon fontSize="small" sx={{ color: "#999" }} />
             </InputAdornment>
           }
-           sx={{
+          sx={{
             color: "#999",
             borderColor: "#333",
             fontSize: "0.8rem",
             ".MuiOutlinedInput-notchedOutline": { borderColor: "#333" },
-            "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#fff" },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#fff",
+            },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               borderColor: "#fff",
             },
@@ -322,8 +334,8 @@ export function Component() {
             minWidth: 120,
           }}
         >
-          <MenuItem value="en">English</MenuItem>
-          <MenuItem value="hi">Hindi</MenuItem>
+          <MenuItem value="en">{t("common.english")}</MenuItem>
+          <MenuItem value="hi">{t("common.hindi")}</MenuItem>
         </Select>
       </Box>
     </Box>

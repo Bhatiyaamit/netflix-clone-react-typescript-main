@@ -12,36 +12,49 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import LanguageIcon from "@mui/icons-material/Language";
 import useOffSetTop from "src/hooks/useOffSetTop";
 import { APP_BAR_HEIGHT, MAIN_PATH } from "src/constant";
 import Logo from "../Logo";
 import SearchBox from "../SearchBox";
 import NetflixNavigationLink from "../NetflixNavigationLink";
+import { useTranslation } from "react-i18next";
 
-const NAV_LINKS = [
-  { label: "Home", path: `/${MAIN_PATH.browse}` },
-  { label: "Shows", path: `/${MAIN_PATH.shows}` },
-  { label: "Movies", path: `/${MAIN_PATH.movies}` },
-  { label: "New & Popular", path: `/${MAIN_PATH.newPopular}` },
-  { label: "My List", path: `/${MAIN_PATH.myList}` },
-  { label: "Browse by Languages", path: `/${MAIN_PATH.browseByLanguages}` },
+const NAV_LINK_KEYS = [
+  { key: "nav.home", path: `/${MAIN_PATH.browse}` },
+  { key: "nav.shows", path: `/${MAIN_PATH.shows}` },
+  { key: "nav.movies", path: `/${MAIN_PATH.movies}` },
+  { key: "nav.newPopular", path: `/${MAIN_PATH.newPopular}` },
+  { key: "nav.myList", path: `/${MAIN_PATH.myList}` },
+  { key: "nav.browseByLanguages", path: `/${MAIN_PATH.browseByLanguages}` },
 ];
+
+const USER_MENU_KEYS = [
+  "userMenu.manageProfiles",
+  "userMenu.transferProfile",
+  "userMenu.account",
+  "userMenu.helpCentre",
+] as const;
 
 const MainHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isOffset = useOffSetTop(APP_BAR_HEIGHT);
+  const { t, i18n } = useTranslation();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
+    null,
   );
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
+    null,
   );
 
   // User Profile Picture
-  const [profilePicture, setProfilePicture] = React.useState<string | null>(null);
+  const [profilePicture, setProfilePicture] = React.useState<string | null>(
+    null,
+  );
 
   React.useEffect(() => {
     const storedPic = localStorage.getItem("userPicture");
@@ -127,9 +140,9 @@ const MainHeader = () => {
               },
             }}
           >
-            {NAV_LINKS.map((link) => (
+            {NAV_LINK_KEYS.map((link) => (
               <MenuItem
-                key={link.label}
+                key={link.key}
                 onClick={() => {
                   navigate(link.path);
                   handleCloseNavMenu();
@@ -146,7 +159,7 @@ const MainHeader = () => {
                     fontWeight: isActive(link.path) ? 700 : 400,
                   }}
                 >
-                  {link.label}
+                  {t(link.key)}
                 </Typography>
               </MenuItem>
             ))}
@@ -177,9 +190,9 @@ const MainHeader = () => {
           spacing={2.5}
           sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
         >
-          {NAV_LINKS.map((link) => (
+          {NAV_LINK_KEYS.map((link) => (
             <NetflixNavigationLink
-              key={link.label}
+              key={link.key}
               to={link.path}
               variant="subtitle2"
               sx={{
@@ -195,13 +208,55 @@ const MainHeader = () => {
                 },
               }}
             >
-              {link.label}
+              {t(link.key)}
             </NetflixNavigationLink>
           ))}
         </Stack>
 
-        {/* Right side: search, notifications, avatar */}
-        <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center", gap: 1.5 }}>
+        {/* Right side: language, search, notifications, avatar */}
+        <Box
+          sx={{ flexGrow: 0, display: "flex", alignItems: "center", gap: 1.5 }}
+        >
+          {/* Language Switcher */}
+          <Select
+            value={i18n.language}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            size="small"
+            variant="standard"
+            disableUnderline
+            IconComponent={() => null}
+            renderValue={() => (
+              <LanguageIcon
+                sx={{ color: "white", fontSize: 22, display: "flex" }}
+              />
+            )}
+            sx={{
+              color: "white",
+              minWidth: "auto",
+              ".MuiSelect-select": {
+                p: "4px !important",
+                display: "flex",
+                alignItems: "center",
+              },
+            }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  bgcolor: "rgba(0,0,0,0.95)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  "& .MuiMenuItem-root": {
+                    color: "white",
+                    fontSize: "0.85rem",
+                    "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+                  },
+                },
+              },
+            }}
+          >
+            <MenuItem value="en">{t("common.english")}</MenuItem>
+            <MenuItem value="hi">{t("common.hindi")}</MenuItem>
+          </Select>
+
           <SearchBox />
 
           {/* Notification Bell */}
@@ -241,15 +296,13 @@ const MainHeader = () => {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            {["Manage Profiles", "Transfer Profile", "Account", "Help Centre"].map(
-              (setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center" sx={{ color: "text.primary" }}>
-                    {setting}
-                  </Typography>
-                </MenuItem>
-              )
-            )}
+            {USER_MENU_KEYS.map((key) => (
+              <MenuItem key={key} onClick={handleCloseUserMenu}>
+                <Typography textAlign="center" sx={{ color: "text.primary" }}>
+                  {t(key)}
+                </Typography>
+              </MenuItem>
+            ))}
             <MenuItem
               onClick={handleSignOut}
               sx={{
@@ -259,7 +312,7 @@ const MainHeader = () => {
               }}
             >
               <Typography textAlign="center" sx={{ color: "text.primary" }}>
-                Sign out of Netflix
+                {t("common.signOut")}
               </Typography>
             </MenuItem>
           </Menu>

@@ -7,15 +7,26 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
+import { useTranslation } from "react-i18next";
 
-const footerLinks = [
-  ["Audio Description", "Investor Relations", "Legal Notices"],
-  ["Help Centre", "Jobs", "Cookie Preferences"],
-  ["Gift Cards", "Terms of Use", "Corporate Information"],
-  ["Media Centre", "Privacy", "Contact Us"],
-];
+const FOOTER_LINK_KEYS = [
+  "signedInFooter.audioDescription",
+  "signedInFooter.investorRelations",
+  "signedInFooter.legalNotices",
+  "signedInFooter.helpCentre",
+  "signedInFooter.jobs",
+  "signedInFooter.cookiePreferences",
+  "signedInFooter.giftCards",
+  "signedInFooter.termsOfUse",
+  "signedInFooter.corporateInformation",
+  "signedInFooter.mediaCentre",
+  "signedInFooter.privacy",
+  "signedInFooter.contactUs",
+] as const;
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <Box
       component="footer"
@@ -64,9 +75,9 @@ export default function Footer() {
           mb: 3,
         }}
       >
-        {footerLinks.flat().map((linkText) => (
+        {FOOTER_LINK_KEYS.map((key) => (
           <Link
-            key={linkText}
+            key={key}
             href="#"
             underline="hover"
             sx={{
@@ -75,7 +86,7 @@ export default function Footer() {
               "&:hover": { color: "grey.300" },
             }}
           >
-            {linkText}
+            {t(key)}
           </Link>
         ))}
       </Box>

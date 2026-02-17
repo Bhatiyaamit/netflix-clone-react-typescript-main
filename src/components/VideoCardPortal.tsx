@@ -99,9 +99,9 @@ export default function VideoCardModal({
             {video.title || (video as any).name}
           </MaxLineTypography>
           <div style={{ flexGrow: 1 }} />
-          <NetflixIconButton>
+          {/* <NetflixIconButton>
             <VolumeUpIcon />
-          </NetflixIconButton>
+          </NetflixIconButton> */}
         </div>
       </div>
       <CardContent>

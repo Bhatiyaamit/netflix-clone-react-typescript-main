@@ -11,11 +11,12 @@ import { useGetDiscoverByLanguageQuery } from "src/store/slices/discover";
 import { MEDIA_TYPE } from "src/types/Common";
 import { APP_BAR_HEIGHT } from "src/constant";
 import VideoItemWithHover from "src/components/VideoItemWithHover";
+import { useTranslation } from "react-i18next";
 
-const SORT_OPTIONS = [
-  { value: "popularity.desc", label: "Suggestions For You" },
-  { value: "vote_average.desc", label: "Rating" },
-  { value: "release_date.desc", label: "Year Released" },
+const SORT_OPTION_KEYS = [
+  { value: "popularity.desc", key: "browseByLanguages.suggestionsForYou" },
+  { value: "vote_average.desc", key: "browseByLanguages.rating" },
+  { value: "release_date.desc", key: "browseByLanguages.yearReleased" },
   { value: "original_title.asc", label: "A-Z" },
   { value: "original_title.desc", label: "Z-A" },
 ];
@@ -23,6 +24,7 @@ const SORT_OPTIONS = [
 export function Component() {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [sortBy, setSortBy] = useState("popularity.desc");
+  const { t } = useTranslation();
   const { data: languages } = useGetLanguagesQuery();
   const { data: movies } = useGetDiscoverByLanguageQuery({
     mediaType: MEDIA_TYPE.Movie,
@@ -72,7 +74,7 @@ export function Component() {
               fontSize: { xs: "1.5rem", md: "2.2rem" },
             }}
           >
-            Browse by Languages
+            {t("browseByLanguages.title")}
           </Typography>
 
           <Stack
@@ -88,11 +90,14 @@ export function Component() {
                 display: { xs: "none", sm: "block" },
               }}
             >
-              Select Your Preferences
+              {t("browseByLanguages.selectPreferences")}
             </Typography>
 
             {/* Language Selector */}
-            <FormControl size="small" sx={{ width: { xs: "100%", sm: "auto" } }}>
+            <FormControl
+              size="small"
+              sx={{ width: { xs: "100%", sm: "auto" } }}
+            >
               <Select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
@@ -131,11 +136,21 @@ export function Component() {
             </FormControl>
 
             {/* Sort Selector */}
-            <Stack direction="row" alignItems="center" spacing={1} sx={{ width: { xs: "100%", sm: "auto" } }}>
-              <Typography sx={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem" }}>
-                Sort by
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={1}
+              sx={{ width: { xs: "100%", sm: "auto" } }}
+            >
+              <Typography
+                sx={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem" }}
+              >
+                {t("browseByLanguages.sortBy")}
               </Typography>
-              <FormControl size="small" sx={{ flexGrow: 1, minWidth: { sm: 160 } }}>
+              <FormControl
+                size="small"
+                sx={{ flexGrow: 1, minWidth: { sm: 160 } }}
+              >
                 <Select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
@@ -162,9 +177,9 @@ export function Component() {
                     },
                   }}
                 >
-                  {SORT_OPTIONS.map((opt) => (
+                  {SORT_OPTION_KEYS.map((opt) => (
                     <MenuItem key={opt.value} value={opt.value}>
-                      {opt.label}
+                      {opt.label || t(opt.key!)}
                     </MenuItem>
                   ))}
                 </Select>
@@ -195,8 +210,10 @@ export function Component() {
 
         {movies && movies.results && movies.results.length === 0 && (
           <Box sx={{ py: 8, textAlign: "center" }}>
-            <Typography sx={{ color: "rgba(255,255,255,0.5)", fontSize: "1.1rem" }}>
-              No results found for the selected language.
+            <Typography
+              sx={{ color: "rgba(255,255,255,0.5)", fontSize: "1.1rem" }}
+            >
+              {t("browseByLanguages.noResults")}
             </Typography>
           </Box>
         )}

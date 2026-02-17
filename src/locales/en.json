@@ -1,0 +1,141 @@
+{
+  "common": {
+    "english": "English",
+    "hindi": "Hindi",
+    "signIn": "Sign In",
+    "signOut": "Sign out of Netflix",
+    "netflixIndia": "Netflix India"
+  },
+  "nav": {
+    "home": "Home",
+    "shows": "Shows",
+    "movies": "Movies",
+    "newPopular": "New & Popular",
+    "myList": "My List",
+    "browseByLanguages": "Browse by Languages"
+  },
+  "hero": {
+    "title": "Unlimited movies, shows, and more",
+    "subtitle": "Starts at ₹149. Cancel at any time.",
+    "cta": "Ready to watch? Enter your email to create or restart your membership.",
+    "emailLabel": "Email address",
+    "getStarted": "Get Started"
+  },
+  "signIn": {
+    "title": "Sign In",
+    "emailLabel": "Email or Phone Number",
+    "passwordLabel": "Password",
+    "signInButton": "Sign In",
+    "signInWithGoogle": "Sign In with Google",
+    "rememberMe": "Remember me",
+    "needHelp": "Need help?",
+    "newToNetflix": "New to Netflix?",
+    "signUpNow": "Sign up now.",
+    "recaptcha": "This page is protected by Google reCAPTCHA to ensure you're not a bot.",
+    "learnMore": "Learn more.",
+    "questionsContact": "Questions? Contact us."
+  },
+  "footer": {
+    "questionsCall": "Questions? Call 000-800-919-1694",
+    "faq": "FAQ",
+    "helpCentre": "Help Centre",
+    "account": "Account",
+    "mediaCentre": "Media Centre",
+    "investorRelations": "Investor Relations",
+    "jobs": "Jobs",
+    "waysToWatch": "Ways to Watch",
+    "termsOfUse": "Terms of Use",
+    "privacy": "Privacy",
+    "cookiePreferences": "Cookie Preferences",
+    "corporateInformation": "Corporate Information",
+    "contactUs": "Contact Us",
+    "speedTest": "Speed Test",
+    "legalNotices": "Legal Notices",
+    "onlyOnNetflix": "Only on Netflix",
+    "helpCenter": "Help Center",
+    "cancelMembership": "Cancel Membership",
+    "netflixShop": "Netflix Shop",
+    "impressum": "Impressum"
+  },
+  "search": {
+    "title": "Search",
+    "resultsFor": "Results for \"{{query}}\"",
+    "startTyping": "Start typing to search",
+    "searchDescription": "Search for movies, TV shows, and more.",
+    "noResults": "No results found",
+    "tryDifferent": "Try different keywords or check your spelling."
+  },
+  "myList": {
+    "title": "My List",
+    "empty": "Your list is empty",
+    "emptyDescription": "Add movies and TV shows to your list so you can easily find them later."
+  },
+  "newPopular": {
+    "title": "New & Popular",
+    "trendingNow": "Trending Now",
+    "worthTheWait": "Worth the Wait",
+    "topTvShows": "Top 10 TV Shows Today",
+    "topMovies": "Top 10 Movies Today"
+  },
+  "browseByLanguages": {
+    "title": "Browse by Languages",
+    "selectPreferences": "Select Your Preferences",
+    "sortBy": "Sort by",
+    "suggestionsForYou": "Suggestions For You",
+    "rating": "Rating",
+    "yearReleased": "Year Released",
+    "noResults": "No results found for the selected language."
+  },
+  "detail": {
+    "genres": "Genres",
+    "availableIn": "Available in",
+    "moreLikeThis": "More Like This",
+    "match": "Match"
+  },
+  "userMenu": {
+    "manageProfiles": "Manage Profiles",
+    "transferProfile": "Transfer Profile",
+    "account": "Account",
+    "helpCentre": "Help Centre"
+  },
+  "features": {
+    "title": "More reasons to join",
+    "enjoyTvTitle": "Enjoy on your TV",
+    "enjoyTvDesc": "Watch on smart TVs, PlayStation, Xbox, Chromecast, Apple TV, Blu-ray players and more.",
+    "downloadTitle": "Download your shows to watch offline",
+    "downloadDesc": "Save your favourites easily and always have something to watch.",
+    "watchEverywhereTitle": "Watch everywhere",
+    "watchEverywhereDesc": "Stream unlimited movies and TV shows on your phone, tablet, laptop, and TV.",
+    "kidsTitle": "Create profiles for kids",
+    "kidsDesc": "Send kids on adventures with their favourite characters in a space made just for them — free with your membership."
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "q1": "What is Netflix?",
+    "a1": "Netflix is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries and more – on thousands of internet-connected devices.\n\nYou can watch as much as you want, whenever you want, without a single ad – all for one low monthly price. There's always something new to discover, and new TV shows and movies are added every week!",
+    "q2": "How much does Netflix cost?",
+    "a2": "Watch Netflix on your smartphone, tablet, Smart TV, laptop, or streaming device, all for one fixed monthly fee. Plans range from ₹149 to ₹649 a month. No extra costs, no contracts.",
+    "q3": "Where can I watch?",
+    "a3": "Watch anywhere, anytime. Sign in with your Netflix account to watch instantly on the web at netflix.com from your personal computer or on any internet-connected device that offers the Netflix app, including smart TVs, smartphones, tablets, streaming media players and game consoles.\n\nYou can also download your favourite shows with the iOS, Android, or Windows 10 app. Use downloads to watch while you're on the go and without an internet connection. Take Netflix with you anywhere.",
+    "q4": "How do I cancel?",
+    "a4": "Netflix is flexible. There are no annoying contracts and no commitments. You can easily cancel your account online in two clicks. There are no cancellation fees – start or stop your account anytime.",
+    "q5": "What can I watch on Netflix?",
+    "a5": "Netflix has an extensive library of feature films, documentaries, TV shows, anime, award-winning Netflix originals, and more. Watch as much as you want, anytime you want.",
+    "q6": "Is Netflix good for kids?",
+    "a6": "The Netflix Kids experience is included in your membership to give parents control while kids enjoy family-friendly TV shows and films in their own space.\n\nKids profiles come with PIN-protected parental controls that let you restrict the maturity rating of content kids can watch and block specific titles you don't want kids to see."
+  },
+  "signedInFooter": {
+    "audioDescription": "Audio Description",
+    "investorRelations": "Investor Relations",
+    "legalNotices": "Legal Notices",
+    "helpCentre": "Help Centre",
+    "jobs": "Jobs",
+    "cookiePreferences": "Cookie Preferences",
+    "giftCards": "Gift Cards",
+    "termsOfUse": "Terms of Use",
+    "corporateInformation": "Corporate Information",
+    "mediaCentre": "Media Centre",
+    "privacy": "Privacy",
+    "contactUs": "Contact Us"
+  }
+}

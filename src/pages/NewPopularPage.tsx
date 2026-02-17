@@ -5,24 +5,36 @@ import { useGetTrendingQuery } from "src/store/slices/discover";
 import { MEDIA_TYPE } from "src/types/Common";
 import { APP_BAR_HEIGHT } from "src/constant";
 import SliderRowForGenre from "src/components/VideoSlider";
+import { useTranslation } from "react-i18next";
 
-const TRENDING_SECTIONS = [
-  { name: "Trending Now", mediaType: "all", timeWindow: "day" },
-  { name: "Worth the Wait", mediaType: "all", timeWindow: "week" },
-  { name: "Top 10 TV Shows Today", mediaType: "tv", timeWindow: "day" },
-  { name: "Top 10 Movies Today", mediaType: "movie", timeWindow: "day" },
+const TRENDING_SECTION_KEYS = [
+  { key: "newPopular.trendingNow", mediaType: "all", timeWindow: "day" },
+  { key: "newPopular.worthTheWait", mediaType: "all", timeWindow: "week" },
+  { key: "newPopular.topTvShows", mediaType: "tv", timeWindow: "day" },
+  { key: "newPopular.topMovies", mediaType: "movie", timeWindow: "day" },
 ];
 
-function TrendingSlider({ name, mediaType, timeWindow }: { name: string; mediaType: string; timeWindow: string }) {
+function TrendingSlider({
+  nameKey,
+  mediaType,
+  timeWindow,
+}: {
+  nameKey: string;
+  mediaType: string;
+  timeWindow: string;
+}) {
   const { data } = useGetTrendingQuery({ mediaType, timeWindow, page: 1 });
+  const { t } = useTranslation();
 
   if (!data || !data.results || data.results.length === 0) return null;
 
   return (
     <Box sx={{ px: { xs: "4%", md: "60px" }, py: 1 }}>
-
       <SliderRowForGenre
-        genre={{ name, apiString: timeWindow === "day" ? "popular" : "top_rated" }}
+        genre={{
+          name: t(nameKey),
+          apiString: timeWindow === "day" ? "popular" : "top_rated",
+        }}
         mediaType={mediaType === "tv" ? MEDIA_TYPE.Tv : MEDIA_TYPE.Movie}
       />
     </Box>
@@ -30,6 +42,8 @@ function TrendingSlider({ name, mediaType, timeWindow }: { name: string; mediaTy
 }
 
 export function Component() {
+  const { t } = useTranslation();
+
   return (
     <Stack direction="column" spacing={3}>
       <Box
@@ -46,14 +60,14 @@ export function Component() {
             fontSize: { xs: "1.8rem", md: "2.5rem" },
           }}
         >
-          New & Popular
+          {t("newPopular.title")}
         </Typography>
       </Box>
 
-      {TRENDING_SECTIONS.map((section) => (
+      {TRENDING_SECTION_KEYS.map((section) => (
         <TrendingSlider
-          key={section.name}
-          name={section.name}
+          key={section.key}
+          nameKey={section.key}
           mediaType={section.mediaType}
           timeWindow={section.timeWindow}
         />

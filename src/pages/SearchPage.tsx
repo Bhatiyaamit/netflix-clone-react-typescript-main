@@ -7,14 +7,16 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useSearchMultiQuery } from "src/store/slices/discover";
 import { APP_BAR_HEIGHT } from "src/constant";
 import VideoItemWithHover from "src/components/VideoItemWithHover";
+import { useTranslation } from "react-i18next";
 
 export function Component() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("q") || "";
+  const { t } = useTranslation();
 
   const { data, isLoading, isFetching } = useSearchMultiQuery(
     { query, page: 1 },
-    { skip: !query }
+    { skip: !query },
   );
 
   // Filter results to only movies and tv shows with backdrop images
@@ -22,7 +24,7 @@ export function Component() {
     data?.results?.filter(
       (item: any) =>
         (item.media_type === "movie" || item.media_type === "tv") &&
-        item.backdrop_path
+        item.backdrop_path,
     ) || [];
 
   return (
@@ -44,7 +46,7 @@ export function Component() {
             fontSize: { xs: "1.8rem", md: "2.5rem" },
           }}
         >
-          {query ? `Results for "${query}"` : "Search"}
+          {query ? t("search.resultsFor", { query }) : t("search.title")}
         </Typography>
 
         {isLoading || isFetching ? (
@@ -76,7 +78,7 @@ export function Component() {
                 mb: 2,
               }}
             >
-              Start typing to search
+              {t("search.startTyping")}
             </Typography>
             <Typography
               sx={{
@@ -86,7 +88,7 @@ export function Component() {
                 maxWidth: 400,
               }}
             >
-              Search for movies, TV shows, and more.
+              {t("search.searchDescription")}
             </Typography>
           </Box>
         ) : results.length === 0 ? (
@@ -107,7 +109,7 @@ export function Component() {
                 mb: 2,
               }}
             >
-              No results found
+              {t("search.noResults")}
             </Typography>
             <Typography
               sx={{
@@ -117,7 +119,7 @@ export function Component() {
                 maxWidth: 400,
               }}
             >
-              Try different keywords or check your spelling.
+              {t("search.tryDifferent")}
             </Typography>
           </Box>
         ) : (

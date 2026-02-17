@@ -5,8 +5,29 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputAdornment from "@mui/material/InputAdornment";
 import LanguageIcon from "@mui/icons-material/Language";
+import { useTranslation } from "react-i18next";
+
+const FOOTER_LINK_KEYS = [
+  "footer.faq",
+  "footer.helpCentre",
+  "footer.account",
+  "footer.mediaCentre",
+  "footer.investorRelations",
+  "footer.jobs",
+  "footer.waysToWatch",
+  "footer.termsOfUse",
+  "footer.privacy",
+  "footer.cookiePreferences",
+  "footer.corporateInformation",
+  "footer.contactUs",
+  "footer.speedTest",
+  "footer.legalNotices",
+  "footer.onlyOnNetflix",
+] as const;
 
 export default function LandingFooter() {
+  const { t, i18n } = useTranslation();
+
   return (
     <Box
       component="footer"
@@ -18,7 +39,7 @@ export default function LandingFooter() {
         borderTop: "8px solid #232323",
       }}
     >
-      <Typography mb={3}>Questions? Call 000-800-919-1694</Typography>
+      <Typography mb={3}>{t("footer.questionsCall")}</Typography>
       <Box
         sx={{
           display: "grid",
@@ -31,25 +52,9 @@ export default function LandingFooter() {
           mb: 4,
         }}
       >
-        {[
-          "FAQ",
-          "Help Centre",
-          "Account",
-          "Media Centre",
-          "Investor Relations",
-          "Jobs",
-          "Ways to Watch",
-          "Terms of Use",
-          "Privacy",
-          "Cookie Preferences",
-          "Corporate Information",
-          "Contact Us",
-          "Speed Test",
-          "Legal Notices",
-          "Only on Netflix",
-        ].map((linkText) => (
+        {FOOTER_LINK_KEYS.map((key) => (
           <Link
-            key={linkText}
+            key={key}
             href="#"
             underline="hover"
             sx={{
@@ -57,13 +62,14 @@ export default function LandingFooter() {
               "&:hover": { color: "#b3b3b3" },
             }}
           >
-            {linkText}
+            {t(key)}
           </Link>
         ))}
       </Box>
 
       <Select
-        value="en"
+        value={i18n.language}
+        onChange={(e) => i18n.changeLanguage(e.target.value)}
         size="small"
         startAdornment={
           <InputAdornment position="start">
@@ -84,11 +90,11 @@ export default function LandingFooter() {
           minWidth: 120,
         }}
       >
-        <MenuItem value="en">English</MenuItem>
-        <MenuItem value="hi">Hindi</MenuItem>
+        <MenuItem value="en">{t("common.english")}</MenuItem>
+        <MenuItem value="hi">{t("common.hindi")}</MenuItem>
       </Select>
 
-      <Typography fontSize="0.8rem">Netflix India</Typography>
+      <Typography fontSize="0.8rem">{t("common.netflixIndia")}</Typography>
     </Box>
   );
 }

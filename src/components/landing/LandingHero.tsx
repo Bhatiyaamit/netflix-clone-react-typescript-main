@@ -3,16 +3,18 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { MAIN_PATH } from "src/constant";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputAdornment from "@mui/material/InputAdornment";
 import LanguageIcon from "@mui/icons-material/Language";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { useTranslation } from "react-i18next";
 
 export default function LandingHero() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   return (
     <Box
@@ -21,7 +23,8 @@ export default function LandingHero() {
         minHeight: "700px",
         height: "100vh",
         position: "relative",
-        backgroundImage: "linear-gradient(to top, rgba(0, 0, 0, 0.8) 0, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.8) 100%), url('/assets/signin-bg.png')",
+        backgroundImage:
+          "linear-gradient(to top, rgba(0, 0, 0, 0.8) 0, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.8) 100%), url('/assets/signin-bg.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         borderBottom: "8px solid #232323",
@@ -61,7 +64,8 @@ export default function LandingHero() {
         />
         <Stack direction="row" spacing={2}>
           <Select
-            value="en"
+            value={i18n.language}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
             size="small"
             variant="outlined"
             startAdornment={
@@ -72,16 +76,20 @@ export default function LandingHero() {
             sx={{
               color: "white",
               ".MuiOutlinedInput-notchedOutline": { borderColor: "#999" },
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#fff" },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#fff" },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#fff",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#fff",
+              },
               ".MuiSvgIcon-root": { color: "white" },
               height: "32px",
               minWidth: "120px",
               display: { xs: "none", sm: "flex" },
             }}
           >
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="hi">Hindi</MenuItem>
+            <MenuItem value="en">{t("common.english")}</MenuItem>
+            <MenuItem value="hi">{t("common.hindi")}</MenuItem>
           </Select>
           <Button
             variant="contained"
@@ -96,7 +104,7 @@ export default function LandingHero() {
               "&:hover": { bgcolor: "#f40612" },
             }}
           >
-            Sign In
+            {t("common.signIn")}
           </Button>
         </Stack>
       </Stack>
@@ -125,7 +133,7 @@ export default function LandingHero() {
             maxWidth: "800px",
           }}
         >
-          Unlimited movies, shows, and more
+          {t("hero.title")}
         </Typography>
         <Typography
           variant="h5"
@@ -135,7 +143,7 @@ export default function LandingHero() {
             mb: 3,
           }}
         >
-          Starts at ₹149. Cancel at any time.
+          {t("hero.subtitle")}
         </Typography>
         <Typography
           variant="h6"
@@ -145,7 +153,7 @@ export default function LandingHero() {
             mb: 2,
           }}
         >
-          Ready to watch? Enter your email to create or restart your membership.
+          {t("hero.cta")}
         </Typography>
 
         <Stack
@@ -155,13 +163,16 @@ export default function LandingHero() {
         >
           <TextField
             variant="filled"
-            label="Email address"
+            label={t("hero.emailLabel")}
             fullWidth
             InputLabelProps={{
               style: { color: "#b3b3b3" },
             }}
             InputProps={{
-              style: { color: "#fff", backgroundColor: "rgba(22, 22, 22, 0.7)" },
+              style: {
+                color: "#fff",
+                backgroundColor: "rgba(22, 22, 22, 0.7)",
+              },
               disableUnderline: true,
             }}
             sx={{
@@ -171,7 +182,10 @@ export default function LandingHero() {
                 backgroundColor: "rgba(22, 22, 22, 0.7)",
                 height: "56px",
                 "&:hover": { backgroundColor: "rgba(22, 22, 22, 0.7)" },
-                "&.Mui-focused": { backgroundColor: "rgba(22, 22, 22, 0.7)", border: "1px solid #fff" },
+                "&.Mui-focused": {
+                  backgroundColor: "rgba(22, 22, 22, 0.7)",
+                  border: "1px solid #fff",
+                },
               },
             }}
           />
@@ -190,7 +204,7 @@ export default function LandingHero() {
               "&:hover": { bgcolor: "#f40612" },
             }}
           >
-            Get Started
+            {t("hero.getStarted")}
           </Button>
         </Stack>
       </Box>

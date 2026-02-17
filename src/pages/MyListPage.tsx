@@ -6,9 +6,11 @@ import { useSelector } from "react-redux";
 import { selectMyList } from "src/store/slices/myList";
 import { APP_BAR_HEIGHT } from "src/constant";
 import VideoItemWithHover from "src/components/VideoItemWithHover";
+import { useTranslation } from "react-i18next";
 
 export function Component() {
   const myList = useSelector(selectMyList);
+  const { t } = useTranslation();
 
   return (
     <Stack direction="column">
@@ -29,7 +31,7 @@ export function Component() {
             fontSize: { xs: "1.8rem", md: "2.5rem" },
           }}
         >
-          My List
+          {t("myList.title")}
         </Typography>
 
         {myList.length === 0 ? (
@@ -50,7 +52,7 @@ export function Component() {
                 mb: 2,
               }}
             >
-              Your list is empty
+              {t("myList.empty")}
             </Typography>
             <Typography
               sx={{
@@ -60,8 +62,7 @@ export function Component() {
                 maxWidth: 400,
               }}
             >
-              Add movies and TV shows to your list so you can easily find them
-              later.
+              {t("myList.emptyDescription")}
             </Typography>
           </Box>
         ) : (
