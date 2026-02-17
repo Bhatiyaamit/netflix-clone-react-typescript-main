@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
 import { COMMON_TITLES_TV } from "src/constant";
 import HeroSection from "src/components/HeroSection";
 import { genreSliceEndpoints, useGetGenresQuery } from "src/store/slices/genre";
@@ -7,7 +8,6 @@ import { MEDIA_TYPE } from "src/types/Common";
 import { CustomGenre, Genre } from "src/types/Genre";
 import SliderRowForGenre from "src/components/VideoSlider";
 import CategoryHeader from "src/components/CategoryHeader";
-import GridPage from "src/components/GridPage";
 import store from "src/store";
 
 export async function loader() {
@@ -18,46 +18,27 @@ export async function loader() {
 export function Component() {
   const { data: genres, isSuccess } = useGetGenresQuery(MEDIA_TYPE.Tv);
   const [selectedGenre, setSelectedGenre] = useState("");
-  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
   const handleGenreChange = (genreId: string) => {
     setSelectedGenre(genreId);
   };
 
   if (isSuccess && genres && genres.length > 0) {
-    // If a genre is selected and viewMode is grid, show grid view
-    if (selectedGenre && viewMode === "grid") {
-      const genre = genres.find((g) => g.id.toString() === selectedGenre);
-      if (genre) {
-        return (
-          <Stack direction="column">
+    return (
+      <Stack direction="column" spacing={2}>
+        <Box sx={{ position: "relative" }}>
+          <HeroSection mediaType={MEDIA_TYPE.Tv} />
+          <Box
+            sx={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 }}
+          >
             <CategoryHeader
               title="TV Shows"
               genres={genres}
               selectedGenre={selectedGenre}
               onGenreChange={handleGenreChange}
-              showViewToggle
-              viewMode={viewMode}
-              onViewModeChange={setViewMode}
             />
-            <GridPage mediaType={MEDIA_TYPE.Tv} genre={genre} />
-          </Stack>
-        );
-      }
-    }
-
-    return (
-      <Stack direction="column" spacing={2}>
-        <CategoryHeader
-          title="TV Shows"
-          genres={genres}
-          selectedGenre={selectedGenre}
-          onGenreChange={handleGenreChange}
-          showViewToggle
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-        />
-        <HeroSection mediaType={MEDIA_TYPE.Tv} />
+          </Box>
+        </Box>
         {selectedGenre
           ? genres
               .filter((g) => g.id.toString() === selectedGenre)

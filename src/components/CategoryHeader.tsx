@@ -4,9 +4,6 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Stack from "@mui/material/Stack";
-import IconButton from "@mui/material/IconButton";
-import ViewListIcon from "@mui/icons-material/ViewList";
-import GridViewIcon from "@mui/icons-material/GridView";
 import { Genre } from "src/types/Genre";
 import { APP_BAR_HEIGHT } from "src/constant";
 
@@ -15,9 +12,6 @@ interface CategoryHeaderProps {
   genres?: Genre[];
   selectedGenre?: string;
   onGenreChange?: (genreId: string) => void;
-  showViewToggle?: boolean;
-  viewMode?: "list" | "grid";
-  onViewModeChange?: (mode: "list" | "grid") => void;
 }
 
 export default function CategoryHeader({
@@ -25,9 +19,6 @@ export default function CategoryHeader({
   genres,
   selectedGenre = "",
   onGenreChange,
-  showViewToggle = false,
-  viewMode = "list",
-  onViewModeChange,
 }: CategoryHeaderProps) {
   return (
     <Box
@@ -102,34 +93,6 @@ export default function CategoryHeader({
           </FormControl>
         )}
       </Stack>
-
-      {showViewToggle && (
-        <Stack direction="row" spacing={0}>
-          <IconButton
-            onClick={() => onViewModeChange?.("list")}
-            sx={{
-              color: viewMode === "list" ? "white" : "rgba(255,255,255,0.4)",
-              borderRadius: 0,
-              border: "1px solid rgba(255,255,255,0.3)",
-              borderRight: "none",
-              p: "6px",
-            }}
-          >
-            <ViewListIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            onClick={() => onViewModeChange?.("grid")}
-            sx={{
-              color: viewMode === "grid" ? "white" : "rgba(255,255,255,0.4)",
-              borderRadius: 0,
-              border: "1px solid rgba(255,255,255,0.3)",
-              p: "6px",
-            }}
-          >
-            <GridViewIcon fontSize="small" />
-          </IconButton>
-        </Stack>
-      )}
     </Box>
   );
 }
