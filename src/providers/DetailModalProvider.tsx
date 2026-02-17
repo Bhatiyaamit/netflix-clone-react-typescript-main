@@ -35,13 +35,21 @@ export default function DetailModalProvider({
     async (newDetailType: { mediaType?: MEDIA_TYPE; id?: number }) => {
       if (!!newDetailType.id && newDetailType.mediaType) {
         // Set loading state first
-        setDetail({ ...newDetailType, mediaDetail: undefined, isLoading: true });
+        setDetail({
+          ...newDetailType,
+          mediaDetail: undefined,
+          isLoading: true,
+        });
         try {
           const response = await getAppendedVideos({
             mediaType: newDetailType.mediaType,
             id: newDetailType.id as number,
           }).unwrap();
-          setDetail({ ...newDetailType, mediaDetail: response, isLoading: false });
+          setDetail({
+            ...newDetailType,
+            mediaDetail: response,
+            isLoading: false,
+          });
         } catch (error) {
           // If the first media type fails, try the other one
           const fallbackType =
@@ -61,7 +69,10 @@ export default function DetailModalProvider({
             });
           } catch {
             // Both failed, close the modal
-            console.warn("Failed to load video details for id:", newDetailType.id);
+            console.warn(
+              "Failed to load video details for id:",
+              newDetailType.id,
+            );
             setDetail(INITIAL_DETAIL_STATE);
           }
         }
@@ -69,7 +80,7 @@ export default function DetailModalProvider({
         setDetail(INITIAL_DETAIL_STATE);
       }
     },
-    []
+    [],
   );
 
   useEffect(() => {

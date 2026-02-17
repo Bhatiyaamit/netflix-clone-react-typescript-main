@@ -9,7 +9,7 @@ export const initialItemState: PaginatedMovieResult = {
   page: 0,
   results: [],
   total_pages: 0,
-  total_results: 0
+  total_results: 0,
 };
 
 const discoverSlice = createSlice({
@@ -34,7 +34,7 @@ const discoverSlice = createSlice({
     builder.addMatcher(
       isAnyOf(
         extendedApi.endpoints.getVideosByMediaTypeAndCustomGenre.matchFulfilled,
-        extendedApi.endpoints.getVideosByMediaTypeAndGenreId.matchFulfilled
+        extendedApi.endpoints.getVideosByMediaTypeAndGenreId.matchFulfilled,
       ),
       (state, action) => {
         const {
@@ -51,7 +51,7 @@ const discoverSlice = createSlice({
           state[mediaType][itemKey].total_pages = total_pages;
           state[mediaType][itemKey].total_results = total_results;
         }
-      }
+      },
     );
   },
 });
@@ -61,10 +61,9 @@ export default discoverSlice.reducer;
 
 const extendedApi = tmdbApi.injectEndpoints({
   endpoints: (build) => ({
-
-        //     getVideosByMediaTypeAndGenreId: build.query{
-        //                                    query: () => ...
-        //                                               })
+    //     getVideosByMediaTypeAndGenreId: build.query{
+    //                                    query: () => ...
+    //                                               })
 
     getVideosByMediaTypeAndGenreId: build.query<
       PaginatedMovieResult & {
@@ -80,7 +79,7 @@ const extendedApi = tmdbApi.injectEndpoints({
       transformResponse: (
         response: PaginatedMovieResult,
         _,
-        { mediaType, genreId }
+        { mediaType, genreId },
       ) => ({
         ...response,
         mediaType,
@@ -101,7 +100,7 @@ const extendedApi = tmdbApi.injectEndpoints({
       transformResponse: (
         response: PaginatedMovieResult,
         _,
-        { mediaType, apiString }
+        { mediaType, apiString },
       ) => {
         return {
           ...response,
@@ -139,9 +138,19 @@ const extendedApi = tmdbApi.injectEndpoints({
     }),
     getDiscoverByLanguage: build.query<
       PaginatedMovieResult,
-      { mediaType: MEDIA_TYPE; language: string; page?: number; sortBy?: string }
+      {
+        mediaType: MEDIA_TYPE;
+        language: string;
+        page?: number;
+        sortBy?: string;
+      }
     >({
-      query: ({ mediaType, language, page = 1, sortBy = "popularity.desc" }) => ({
+      query: ({
+        mediaType,
+        language,
+        page = 1,
+        sortBy = "popularity.desc",
+      }) => ({
         url: `/discover/${mediaType}`,
         params: {
           api_key: TMDB_V3_API_KEY,

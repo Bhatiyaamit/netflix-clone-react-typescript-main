@@ -52,16 +52,16 @@ export default function Trending() {
   });
 
   const beforeChange = (currentIndex: number, nextIndex: number) => {
-      if (currentIndex < nextIndex) {
-        setActiveSlideIndex(nextIndex);
-        // Approximately check if we reached the end based on slide count (10 items)
-        if (nextIndex >= 5) setIsEnd(true); 
-      } else if (currentIndex > nextIndex) {
-        setIsEnd(false);
-         setActiveSlideIndex(nextIndex);
-      } else {
-         setActiveSlideIndex(nextIndex);
-      }
+    if (currentIndex < nextIndex) {
+      setActiveSlideIndex(nextIndex);
+      // Approximately check if we reached the end based on slide count (10 items)
+      if (nextIndex >= 5) setIsEnd(true);
+    } else if (currentIndex > nextIndex) {
+      setIsEnd(false);
+      setActiveSlideIndex(nextIndex);
+    } else {
+      setActiveSlideIndex(nextIndex);
+    }
   };
 
   const settings: Settings = {
@@ -99,36 +99,47 @@ export default function Trending() {
   };
 
   // If API has results, use them. Otherwise use MOCK_POSTERS with full URL.
-  const movies = isSuccess && data?.results && data.results.length > 0 
-    ? data.results.slice(0, 10) 
-    : MOCK_POSTERS.map((path, index) => ({
-        id: index,
-        title: "Trending Movie",
-        poster_path: path
-      }));
+  const movies =
+    isSuccess && data?.results && data.results.length > 0
+      ? data.results.slice(0, 10)
+      : MOCK_POSTERS.map((path, index) => ({
+          id: index,
+          title: "Trending Movie",
+          poster_path: path,
+        }));
 
   return (
-    <Box sx={{ py: 6, px: { xs: 2, md: 6, lg: 20 }, bgcolor: "#000", overflow: "hidden" }}>
+    <Box
+      sx={{
+        py: 6,
+        px: { xs: 2, md: 6, lg: 20 },
+        bgcolor: "#000",
+        overflow: "hidden",
+      }}
+    >
       <Typography variant="h4" fontWeight="500" mb={3} color="#fff">
         Trending Now
       </Typography>
 
       <Box sx={{ position: "relative", mx: -1 }}>
         <CustomNavigation
-            isEnd={isEnd}
-            arrowWidth={ARROW_MAX_WIDTH}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-            activeSlideIndex={activeSlideIndex}
+          isEnd={isEnd}
+          arrowWidth={ARROW_MAX_WIDTH}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+          activeSlideIndex={activeSlideIndex}
         >
-            <StyledSlider ref={sliderRef} {...settings}>
+          <StyledSlider ref={sliderRef} {...settings}>
             {movies.map((movie: any, index: number) => (
-                <Box key={movie.id} sx={{ position: "relative", minHeight: "200px" }}>
+              <Box
+                key={movie.id}
+                sx={{ position: "relative", minHeight: "200px" }}
+              >
                 <Box
-                    component="img"
-                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title}
-                    sx={{
+                  component="img"
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  alt={movie.title}
+                  sx={{
                     width: "100%",
                     borderRadius: "8px",
                     transition: "transform 0.3s",
@@ -136,11 +147,11 @@ export default function Trending() {
                     marginLeft: "35px", // Make space for the number
                     marginBottom: "10px",
                     cursor: "pointer",
-                    }}
+                  }}
                 />
                 <Typography
-                    variant="h1"
-                    sx={{
+                  variant="h1"
+                  sx={{
                     position: "absolute",
                     bottom: 0,
                     left: -15,
@@ -152,13 +163,13 @@ export default function Trending() {
                     lineHeight: 1,
                     zIndex: 1,
                     userSelect: "none",
-                    }}
+                  }}
                 >
-                    {index + 1}
+                  {index + 1}
                 </Typography>
-                </Box>
+              </Box>
             ))}
-            </StyledSlider>
+          </StyledSlider>
         </CustomNavigation>
       </Box>
     </Box>

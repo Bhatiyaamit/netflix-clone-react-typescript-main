@@ -11,9 +11,7 @@ import GridPage from "src/components/GridPage";
 import store from "src/store";
 
 export async function loader() {
-  await store.dispatch(
-    genreSliceEndpoints.getGenres.initiate(MEDIA_TYPE.Tv)
-  );
+  await store.dispatch(genreSliceEndpoints.getGenres.initiate(MEDIA_TYPE.Tv));
   return null;
 }
 
@@ -77,7 +75,7 @@ export function Component() {
                   genre={genre}
                   mediaType={MEDIA_TYPE.Tv}
                 />
-              )
+              ),
             )}
       </Stack>
     );

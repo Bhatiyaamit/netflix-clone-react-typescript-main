@@ -168,7 +168,7 @@ export default function SlickSlider({ data, genre }: SlickSliderProps) {
               <MotionContainer
                 open={showExplore}
                 initial="initial"
-                sx={{ display: "inline", color: "success.main" }}
+                sx={{ display: "inline", color: "success.main" , padding:"0 15px"}}
               >
                 {"Explore All".split("").map((letter, index) => (
                   <motion.span key={index} variants={varFadeIn}>

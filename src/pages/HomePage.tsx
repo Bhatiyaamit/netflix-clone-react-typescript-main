@@ -11,7 +11,7 @@ import store from "src/store";
 
 export async function loader() {
   await store.dispatch(
-    genreSliceEndpoints.getGenres.initiate(MEDIA_TYPE.Movie)
+    genreSliceEndpoints.getGenres.initiate(MEDIA_TYPE.Movie),
   );
   return null;
 }

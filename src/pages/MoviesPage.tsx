@@ -12,7 +12,7 @@ import store from "src/store";
 
 export async function loader() {
   await store.dispatch(
-    genreSliceEndpoints.getGenres.initiate(MEDIA_TYPE.Movie)
+    genreSliceEndpoints.getGenres.initiate(MEDIA_TYPE.Movie),
   );
   return null;
 }
@@ -69,15 +69,13 @@ export function Component() {
                   mediaType={MEDIA_TYPE.Movie}
                 />
               ))
-          : [...COMMON_TITLES, ...genres].map(
-              (genre: Genre | CustomGenre) => (
-                <SliderRowForGenre
-                  key={genre.id || genre.name}
-                  genre={genre}
-                  mediaType={MEDIA_TYPE.Movie}
-                />
-              )
-            )}
+          : [...COMMON_TITLES, ...genres].map((genre: Genre | CustomGenre) => (
+              <SliderRowForGenre
+                key={genre.id || genre.name}
+                genre={genre}
+                mediaType={MEDIA_TYPE.Movie}
+              />
+            ))}
       </Stack>
     );
   }

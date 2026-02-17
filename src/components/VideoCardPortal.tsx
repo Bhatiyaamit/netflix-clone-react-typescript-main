@@ -122,7 +122,7 @@ export default function VideoCardModal({
                     title: video.title || (video as any).name || "",
                     backdrop_path: video.backdrop_path,
                     poster_path: video.poster_path || null,
-                  })
+                  }),
                 );
               }}
             >
@@ -150,16 +150,14 @@ export default function VideoCardModal({
             >{`${getRandomNumber(100)}% Match`}</Typography>
             <AgeLimitChip label={`${getRandomNumber(20)}+`} />
             <Typography variant="subtitle2">{`${formatMinuteToReadable(
-              getRandomNumber(180)
+              getRandomNumber(180),
             )}`}</Typography>
             <QualityChip label="HD" />
           </Stack>
           {genres && (
             <GenreBreadcrumbs
               genres={genres
-                .filter((genre) =>
-                  video.genre_ids?.includes(genre.id)
-                )
+                .filter((genre) => video.genre_ids?.includes(genre.id))
                 .map((genre) => genre.name)}
             />
           )}

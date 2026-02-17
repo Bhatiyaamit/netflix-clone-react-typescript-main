@@ -15,7 +15,7 @@ import store from "src/store";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   let genre: CustomGenre | Genre | undefined = COMMON_TITLES.find(
-    (t) => t.apiString === (params.genreId as string)
+    (t) => t.apiString === (params.genreId as string),
   );
   if (!genre) {
     const genres = await store
@@ -47,4 +47,3 @@ export function Component() {
 }
 
 Component.displayName = "GenreExplore";
-

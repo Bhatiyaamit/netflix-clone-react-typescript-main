@@ -12,7 +12,7 @@ import { CustomGenre, Genre } from "src/types/Genre";
 export default function withPagination(
   Component: ElementType,
   mediaType: MEDIA_TYPE,
-  genre: Genre | CustomGenre
+  genre: Genre | CustomGenre,
 ) {
   return function WithPagination() {
     const dispatch = useAppDispatch();

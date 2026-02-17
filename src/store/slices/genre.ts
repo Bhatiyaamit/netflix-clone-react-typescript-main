@@ -16,4 +16,5 @@ const extendedApi = tmdbApi.injectEndpoints({
   }),
 });
 
-export const { useGetGenresQuery, endpoints: genreSliceEndpoints  } = extendedApi;
+export const { useGetGenresQuery, endpoints: genreSliceEndpoints } =
+  extendedApi;
