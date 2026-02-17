@@ -192,9 +192,9 @@ export default function TopTrailer({ mediaType }: TopTrailerProps) {
                 }}
               >
                 <Stack
-                  spacing={4}
+                  spacing={1.6}
                   sx={{
-                    bottom: "35%",
+                    bottom: "29%",
                     position: "absolute",
                     left: { xs: "4%", md: "60px" },
                     top: 0,
@@ -207,13 +207,27 @@ export default function TopTrailer({ mediaType }: TopTrailerProps) {
                     variant="h2"
                     maxLine={1}
                     color="text.primary"
+                    sx={{
+                      display: {
+                        xs: "none", // mobile
+                        sm: "none", // tablet
+                        md: "block", // desktop and above
+                      },
+                    }}
                   >
                     {video.title}
-                  </MaxLineTypography>
+                  </MaxLineTypography>  
                   <MaxLineTypography
-                    variant="h5"
+                    variant="h6"
                     maxLine={3}
                     color="text.primary"
+                    sx={{
+                      display: {
+                        xs: "none", // mobile
+                        sm: "none", // tablet
+                        md: "block", // desktop and above
+                      },
+                    }}
                   >
                     {video.overview}
                   </MaxLineTypography>

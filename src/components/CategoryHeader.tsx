@@ -6,6 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import Stack from "@mui/material/Stack";
 import { Genre } from "src/types/Genre";
 import { APP_BAR_HEIGHT } from "src/constant";
+import useOffSetTop from "src/hooks/useOffSetTop";
 
 interface CategoryHeaderProps {
   title: string;
@@ -20,26 +21,32 @@ export default function CategoryHeader({
   selectedGenre = "",
   onGenreChange,
 }: CategoryHeaderProps) {
+  const isScrolled = useOffSetTop(80);
+
   return (
     <Box
       sx={{
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        pt: `${APP_BAR_HEIGHT + 20}px`,
+        pt: `${APP_BAR_HEIGHT + 8}px`,
         px: { xs: "4%", md: "60px" },
-        pb: 1,
-        position: "relative",
+        pb: 0.5,
+        position: "sticky",
+        top: 0,
         zIndex: 10,
+        bgcolor: isScrolled ? "#141414" : "transparent",
+        boxShadow: isScrolled ? "0 2px 10px rgba(0, 0, 0, 0.5)" : "none",
+        transition: "background-color 0.4s ease, box-shadow 0.4s ease",
       }}
     >
-      <Stack direction="row" alignItems="center" spacing={2}>
+      <Stack direction="row" alignItems="center" spacing={1.5}>
         <Typography
-          variant="h4"
+          variant="h5"
           sx={{
             color: "white",
             fontWeight: 700,
-            fontSize: { xs: "1.5rem", md: "2.2rem" },
+            fontSize: { xs: "1.2rem", md: "1.6rem" },
           }}
         >
           {title}
@@ -56,8 +63,9 @@ export default function CategoryHeader({
                 bgcolor: "rgba(0,0,0,0.7)",
                 border: "1px solid rgba(255,255,255,0.5)",
                 borderRadius: "4px",
-                fontSize: "0.85rem",
-                minWidth: 120,
+                fontSize: "0.8rem",
+                minWidth: 100,
+                height: 32,
                 "& .MuiSelect-icon": { color: "white" },
                 "& .MuiOutlinedInput-notchedOutline": { border: "none" },
                 "&:hover": {
