@@ -31,7 +31,7 @@ root.render(
           <RouterProvider
             router={router}
             fallbackElement={<MainLoadingScreen />}
-          />
+           />
         </ThemeProvider>
       </React.StrictMode>
     </Provider>
