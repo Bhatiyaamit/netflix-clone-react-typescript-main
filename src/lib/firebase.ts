@@ -5,34 +5,38 @@
 import { initializeApp, FirebaseApp, getApps } from "firebase/app";
 import { getAuth, Auth, GoogleAuthProvider } from "firebase/auth";
 
-// Define the Firebase config type for better type safety
-interface FirebaseConfig {
-  apiKey: string;
-  authDomain: string;
-  projectId: string;
-  storageBucket: string;
-  messagingSenderId: string;
-  appId: string;
-}
-
 // Get config from Vite environment variables (never hardcode sensitive info)
-const firebaseConfig: FirebaseConfig = {
+const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID as string,
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID as string,
+  messagingSenderId: import.meta.env
+    .VITE_FIREBASE_MESSAGING_SENDER_ID as string,
   appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
 };
 
-// Initialize Firebase app (singleton pattern)
-const app: FirebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]; 
+// Check if Firebase is properly configured
+const firebaseEnabled = !!(
+  firebaseConfig.apiKey &&
+  firebaseConfig.authDomain &&
+  firebaseConfig.projectId
+);
 
-// Initialize Firebase Auth instance
-export const auth: Auth = getAuth(app);
+// Initialize Firebase app only if configured (singleton pattern)
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+let googleProvider: GoogleAuthProvider | null = null;
 
-// Export GoogleAuthProvider for Google sign-in
-export const googleProvider = new GoogleAuthProvider();
+if (firebaseEnabled) {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  auth = getAuth(app);
+  googleProvider = new GoogleAuthProvider();
+} else {
+  console.warn(
+    "Firebase not configured. Add VITE_FIREBASE_* env vars to enable Firebase Auth.",
+  );
+}
 
-// Export the app if needed elsewhere
+export { auth, googleProvider, firebaseEnabled };
 export default app;
