@@ -7,22 +7,31 @@ import InputAdornment from "@mui/material/InputAdornment";
 import LanguageIcon from "@mui/icons-material/Language";
 import { useTranslation } from "react-i18next";
 
-const FOOTER_LINK_KEYS = [
-  "footer.faq",
-  "footer.helpCentre",
-  "footer.account",
-  "footer.mediaCentre",
-  "footer.investorRelations",
-  "footer.jobs",
-  "footer.waysToWatch",
-  "footer.termsOfUse",
-  "footer.privacy",
-  "footer.cookiePreferences",
-  "footer.corporateInformation",
-  "footer.contactUs",
-  "footer.speedTest",
-  "footer.legalNotices",
-  "footer.onlyOnNetflix",
+const FOOTER_LINKS = [
+  { key: "footer.faq", url: "https://help.netflix.com" },
+  { key: "footer.helpCentre", url: "https://help.netflix.com" },
+  { key: "footer.account", url: "https://www.netflix.com/youraccount" },
+  { key: "footer.mediaCentre", url: "https://media.netflix.com" },
+  { key: "footer.investorRelations", url: "https://ir.netflix.net" },
+  { key: "footer.jobs", url: "https://jobs.netflix.com" },
+  { key: "footer.waysToWatch", url: "https://www.netflix.com/watch" },
+  { key: "footer.termsOfUse", url: "https://www.netflix.com/legal/termsofuse" },
+  { key: "footer.privacy", url: "https://www.netflix.com/privacy" },
+  {
+    key: "footer.cookiePreferences",
+    url: "https://www.netflix.com/cookie-preferences",
+  },
+  {
+    key: "footer.corporateInformation",
+    url: "https://www.netflix.com/legal/corpinfo",
+  },
+  { key: "footer.contactUs", url: "https://help.netflix.com/contactus" },
+  { key: "footer.speedTest", url: "https://fast.com" },
+  { key: "footer.legalNotices", url: "https://www.netflix.com/legal/notices" },
+  {
+    key: "footer.onlyOnNetflix",
+    url: "https://www.netflix.com/browse/genre/839338",
+  },
 ] as const;
 
 export default function LandingFooter() {
@@ -52,10 +61,12 @@ export default function LandingFooter() {
           mb: 4,
         }}
       >
-        {FOOTER_LINK_KEYS.map((key) => (
+        {FOOTER_LINKS.map(({ key, url }) => (
           <Link
             key={key}
-            href="#"
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
             underline="hover"
             sx={{
               color: "#b3b3b3",

@@ -51,6 +51,9 @@ export function Component() {
         if (userInfo.data.picture) {
           localStorage.setItem("userPicture", userInfo.data.picture);
         }
+        if (userInfo.data.name) {
+          localStorage.setItem("userName", userInfo.data.name);
+        }
         navigate(`/${MAIN_PATH.browse}`);
       } catch (error) {
         console.error("Failed to fetch user data", error);

@@ -83,6 +83,7 @@ export default function DetailModal() {
         open={true}
         id="detail_dialog"
         TransitionComponent={Transition}
+        onClose={handleClose}
       >
         <DialogContent
           sx={{
@@ -130,6 +131,7 @@ export default function DetailModal() {
         open={!!detail.mediaDetail}
         id="detail_dialog"
         TransitionComponent={Transition}
+        onClose={handleClose}
       >
         <DialogContent sx={{ p: 0, bgcolor: "#181818" }}>
           <Box
@@ -167,6 +169,7 @@ export default function DetailModal() {
                   ],
                 }}
                 onReady={handleReady}
+                disableInteraction={true}
               />
 
               <Box
@@ -206,6 +209,7 @@ export default function DetailModal() {
                   bgcolor: "#181818",
                   width: { xs: 22, sm: 40 },
                   height: { xs: 22, sm: 40 },
+                  zIndex: 12,
                   "&:hover": {
                     bgcolor: "primary.main",
                   },

@@ -12,7 +12,7 @@ export default function PlayButton({ sx, ...others }: ButtonProps) {
         <PlayArrowIcon
           sx={{
             fontSize: {
-              xs: 20,
+              xs: 16,
               sm: 24,
               md: 28,
             },
@@ -21,9 +21,9 @@ export default function PlayButton({ sx, ...others }: ButtonProps) {
       }
       {...others}
       sx={{
-        px: { xs: 2, sm: 3 },
-        py: { xs: 0.8, sm: 1 },
-        fontSize: { xs: 16, sm: 18, md: 20 },
+        px: { xs: 1.5, sm: 4.5 },
+        py: { xs: 0.5, sm: 1 },
+        fontSize: { xs: 12, sm: 18, md: 20 },
         fontWeight: 600,
         borderRadius: "4px",
         backgroundColor: "#ffffff",

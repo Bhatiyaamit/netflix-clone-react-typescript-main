@@ -14,6 +14,7 @@ export const MAIN_PATH = {
   myList: "my-list",
   browseByLanguages: "browse-by-languages",
   search: "search",
+  manageProfiles: "manage-profiles",
   signin: "signin",
 };
 
@@ -33,11 +34,12 @@ export const COMMON_TITLES_TV: CustomGenre[] = [
 ];
 
 export const YOUTUBE_URL = "https://www.youtube.com/watch?v=";
-export const APP_BAR_HEIGHT = 70;
+export const APP_BAR_HEIGHT = 50;
 
 export const INITIAL_DETAIL_STATE = {
   id: undefined,
   mediaType: undefined,
   mediaDetail: undefined,
 };
-export const GOOGLE_CLIENT_ID = "881240855246-23s85i5kahm19qbrjtg1vmiockucqp8f.apps.googleusercontent.com";
+export const GOOGLE_CLIENT_ID =
+  "881240855246-23s85i5kahm19qbrjtg1vmiockucqp8f.apps.googleusercontent.com";

@@ -29,9 +29,9 @@ export default function CategoryHeader({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        pt: `${APP_BAR_HEIGHT + 8}px`,
+        pt: `${APP_BAR_HEIGHT + 4}px`,
         px: { xs: "4%", md: "60px" },
-        pb: 0.5,
+        pb: { xs: 0, sm: 0.5 },
         position: "sticky",
         top: 0,
         zIndex: 10,
@@ -40,13 +40,13 @@ export default function CategoryHeader({
         transition: "background-color 0.4s ease, box-shadow 0.4s ease",
       }}
     >
-      <Stack direction="row" alignItems="center" spacing={1.5}>
+      <Stack direction="row" alignItems="center" spacing={{ xs: 0.8, sm: 1.5 }}>
         <Typography
           variant="h5"
           sx={{
             color: "white",
             fontWeight: 700,
-            fontSize: { xs: "1.2rem", md: "1.6rem" },
+            fontSize: { xs: "0.9rem", sm: "1.2rem", md: "1.6rem" },
           }}
         >
           {title}
@@ -63,9 +63,9 @@ export default function CategoryHeader({
                 bgcolor: "rgba(0,0,0,0.7)",
                 border: "1px solid rgba(255,255,255,0.5)",
                 borderRadius: "4px",
-                fontSize: "0.8rem",
-                minWidth: 100,
-                height: 32,
+                fontSize: { xs: "0.65rem", sm: "0.8rem" },
+                minWidth: { xs: 70, sm: 100 },
+                height: { xs: 24, sm: 32 },
                 "& .MuiSelect-icon": { color: "white" },
                 "& .MuiOutlinedInput-notchedOutline": { border: "none" },
                 "&:hover": {

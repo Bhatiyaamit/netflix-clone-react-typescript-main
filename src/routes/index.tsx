@@ -58,6 +58,10 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: MAIN_PATH.manageProfiles,
+        lazy: () => import("src/pages/ManageProfilesPage"),
+      },
     ],
   },
   {

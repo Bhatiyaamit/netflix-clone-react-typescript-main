@@ -9,19 +9,59 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { useTranslation } from "react-i18next";
 
-const FOOTER_LINK_KEYS = [
-  "signedInFooter.audioDescription",
-  "signedInFooter.investorRelations",
-  "signedInFooter.legalNotices",
-  "signedInFooter.helpCentre",
-  "signedInFooter.jobs",
-  "signedInFooter.cookiePreferences",
-  "signedInFooter.giftCards",
-  "signedInFooter.termsOfUse",
-  "signedInFooter.corporateInformation",
-  "signedInFooter.mediaCentre",
-  "signedInFooter.privacy",
-  "signedInFooter.contactUs",
+const SOCIAL_LINKS = [
+  {
+    icon: <FacebookIcon />,
+    label: "Facebook",
+    url: "https://www.facebook.com/NetflixIN",
+  },
+  {
+    icon: <InstagramIcon />,
+    label: "Instagram",
+    url: "https://www.instagram.com/netflix",
+  },
+  { icon: <TwitterIcon />, label: "Twitter", url: "https://x.com/netflix" },
+  {
+    icon: <YouTubeIcon />,
+    label: "YouTube",
+    url: "https://www.youtube.com/netflix",
+  },
+];
+
+const FOOTER_LINKS = [
+  {
+    key: "signedInFooter.audioDescription",
+    url: "https://www.netflix.com/accessibility",
+  },
+  { key: "signedInFooter.investorRelations", url: "https://ir.netflix.net" },
+  {
+    key: "signedInFooter.legalNotices",
+    url: "https://www.netflix.com/legal/notices",
+  },
+  { key: "signedInFooter.helpCentre", url: "https://help.netflix.com" },
+  { key: "signedInFooter.jobs", url: "https://jobs.netflix.com" },
+  {
+    key: "signedInFooter.cookiePreferences",
+    url: "https://www.netflix.com/cookie-preferences",
+  },
+  {
+    key: "signedInFooter.giftCards",
+    url: "https://www.netflix.com/gift-cards",
+  },
+  {
+    key: "signedInFooter.termsOfUse",
+    url: "https://www.netflix.com/legal/termsofuse",
+  },
+  {
+    key: "signedInFooter.corporateInformation",
+    url: "https://www.netflix.com/legal/corpinfo",
+  },
+  { key: "signedInFooter.mediaCentre", url: "https://media.netflix.com" },
+  { key: "signedInFooter.privacy", url: "https://www.netflix.com/privacy" },
+  {
+    key: "signedInFooter.contactUs",
+    url: "https://help.netflix.com/contactus",
+  },
 ] as const;
 
 export default function Footer() {
@@ -41,15 +81,14 @@ export default function Footer() {
     >
       {/* Social Media Icons */}
       <Stack direction="row" spacing={2.5} sx={{ mb: 3 }}>
-        {[
-          { icon: <FacebookIcon />, label: "Facebook" },
-          { icon: <InstagramIcon />, label: "Instagram" },
-          { icon: <TwitterIcon />, label: "Twitter" },
-          { icon: <YouTubeIcon />, label: "YouTube" },
-        ].map(({ icon, label }) => (
+        {SOCIAL_LINKS.map(({ icon, label, url }) => (
           <IconButton
             key={label}
             aria-label={label}
+            component="a"
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
             sx={{
               color: "white",
               p: 0,
@@ -75,10 +114,12 @@ export default function Footer() {
           mb: 3,
         }}
       >
-        {FOOTER_LINK_KEYS.map((key) => (
+        {FOOTER_LINKS.map(({ key, url }) => (
           <Link
             key={key}
-            href="#"
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
             underline="hover"
             sx={{
               color: "grey.500",

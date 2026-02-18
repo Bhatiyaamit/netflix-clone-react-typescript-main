@@ -129,6 +129,7 @@ export default function TopTrailer({ mediaType }: TopTrailerProps) {
                       ],
                     }}
                     onReady={handleReady}
+                    disableInteraction={true}
                   />
                 )}
                 <Box
@@ -161,7 +162,7 @@ export default function TopTrailer({ mediaType }: TopTrailerProps) {
                 />
                 <Stack
                   direction="row"
-                  spacing={2}
+                  spacing={{ xs: 0.5, sm: 2 }}
                   sx={{
                     alignItems: "center",
                     position: "absolute",
@@ -172,9 +173,17 @@ export default function TopTrailer({ mediaType }: TopTrailerProps) {
                   <NetflixIconButton
                     size="large"
                     onClick={() => handleMute(muted)}
-                    sx={{ zIndex: 2 }}
+                    sx={{
+                      zIndex: 2,
+                      p: { xs: 0.5, sm: 1 },
+                      borderWidth: { xs: "1.5px", sm: "2px" },
+                    }}
                   >
-                    {!muted ? <VolumeUpIcon /> : <VolumeOffIcon />}
+                    {!muted ? (
+                      <VolumeUpIcon sx={{ fontSize: { xs: 16, sm: 24 } }} />
+                    ) : (
+                      <VolumeOffIcon sx={{ fontSize: { xs: 16, sm: 24 } }} />
+                    )}
                   </NetflixIconButton>
                   <MaturityRate>{`${maturityRate}+`}</MaturityRate>
                 </Stack>
@@ -192,46 +201,45 @@ export default function TopTrailer({ mediaType }: TopTrailerProps) {
                 }}
               >
                 <Stack
-                  spacing={1.6}
+                  spacing={{ xs: 1, md: 2 }}
                   sx={{
-                    bottom: "29%",
                     position: "absolute",
+                    bottom: { xs: "16%", sm: "23%", md: "27%" },
                     left: { xs: "4%", md: "60px" },
-                    top: 0,
-                    width: "36%",
+                    width: {
+                      xs: "92%",
+                      sm: "70%",
+                      md: "36%",
+                    },
+                    maxWidth: "650px",
                     zIndex: 10,
+                    display: "flex",
+                    flexDirection: "column",
                     justifyContent: "flex-end",
+                    overflow: "hidden",
                   }}
                 >
                   <MaxLineTypography
-                    variant="h2"
                     maxLine={1}
                     color="text.primary"
                     sx={{
-                      display: {
-                        xs: "none", // mobile
-                        sm: "none", // tablet
-                        md: "block", // desktop and above
-                      },
+                      typography: { xs: "subtitle1", sm: "h5", md: "h2" },
+                      fontWeight: 700,
                     }}
                   >
                     {video.title}
-                  </MaxLineTypography>  
+                  </MaxLineTypography>
                   <MaxLineTypography
-                    variant="h6"
                     maxLine={3}
                     color="text.primary"
                     sx={{
-                      display: {
-                        xs: "none", // mobile
-                        sm: "none", // tablet
-                        md: "block", // desktop and above
-                      },
+                      display: { xs: "none", sm: "block" },
+                      typography: { sm: "body2", md: "body1" },
                     }}
                   >
                     {video.overview}
                   </MaxLineTypography>
-                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                  <Stack direction="row" spacing={{ xs: 1, sm: 2 }}>
                     <PlayButton size="large" />
                     <MoreInfoButton
                       size="large"

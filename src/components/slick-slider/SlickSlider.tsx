@@ -46,7 +46,7 @@ const StyledSlider = styled(Slider)(
         width: `calc(100% - ${padding}px)`,
       },
     },
-  })
+  }),
 );
 
 interface SlideItemProps {
@@ -137,11 +137,9 @@ export default function SlickSlider({ data, genre }: SlickSliderProps) {
   };
 
   return (
-    
     <Box sx={{ overflow: "hidden", height: "100%", zIndex: 1 }}>
       {data.results.length > 0 && (
         <>
-    
           <Stack
             spacing={2}
             direction="row"
@@ -149,13 +147,14 @@ export default function SlickSlider({ data, genre }: SlickSliderProps) {
             sx={{ mb: 2, pl: { xs: "30px", sm: "60px" } }}
           >
             <NetflixNavigationLink
-              variant="h5"
+              // variant="h6"
               to={`/genre/${
                 genre.id || genre.name.toLowerCase().replace(" ", "_")
               }`}
               sx={{
                 display: "inline-block",
                 fontWeight: 700,
+                typography: { xs: "body2", sm: "h6" },
               }}
               onMouseOver={() => {
                 setShowExplore(true);
@@ -168,7 +167,11 @@ export default function SlickSlider({ data, genre }: SlickSliderProps) {
               <MotionContainer
                 open={showExplore}
                 initial="initial"
-                sx={{ display: "inline", color: "success.main" , padding:"0 15px"}}
+                sx={{
+                  display: "inline",
+                  color: "success.main",
+                  padding: "0 15px",
+                }}
               >
                 {"Explore All".split("").map((letter, index) => (
                   <motion.span key={index} variants={varFadeIn}>

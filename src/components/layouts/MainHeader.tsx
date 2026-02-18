@@ -13,7 +13,6 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import LanguageIcon from "@mui/icons-material/Language";
 import useOffSetTop from "src/hooks/useOffSetTop";
 import { APP_BAR_HEIGHT, MAIN_PATH } from "src/constant";
@@ -33,9 +32,9 @@ const NAV_LINK_KEYS = [
 
 const USER_MENU_KEYS = [
   "userMenu.manageProfiles",
-  "userMenu.transferProfile",
-  "userMenu.account",
-  "userMenu.helpCentre",
+  // "userMenu.transferProfile",
+  // "userMenu.account",
+  // "userMenu.helpCentre",
 ] as const;
 
 const MainHeader = () => {
@@ -82,6 +81,7 @@ const MainHeader = () => {
     handleCloseUserMenu();
     googleLogout();
     localStorage.removeItem("userPicture");
+    localStorage.removeItem("userName");
     navigate(`/${MAIN_PATH.signin}`);
   };
 
@@ -93,6 +93,7 @@ const MainHeader = () => {
     <AppBar
       sx={{
         px: { xs: "16px", md: "60px" },
+        py: { xs: "0px", md: "0px" },
         height: APP_BAR_HEIGHT,
         backgroundImage: "none",
         ...(isOffset
@@ -103,7 +104,14 @@ const MainHeader = () => {
           : { boxShadow: 0, bgcolor: "transparent" }),
       }}
     >
-      <Toolbar disableGutters>
+      <Toolbar
+        disableGutters
+        sx={{
+          minHeight: `${APP_BAR_HEIGHT}px !important`,
+          height: APP_BAR_HEIGHT,
+          alignItems: "center",
+        }}
+      >
         <Logo sx={{ mr: { xs: 2, sm: 4 } }} />
 
         {/* Mobile hamburger menu */}
@@ -259,18 +267,14 @@ const MainHeader = () => {
 
           <SearchBox />
 
-          {/* Notification Bell */}
-          <IconButton sx={{ color: "white", p: 0.5 }}>
-            <NotificationsNoneIcon />
-          </IconButton>
-
           {/* Avatar + dropdown */}
           <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0.5 }}>
               <Avatar
                 alt="user_avatar"
                 src={profilePicture || "/assets/avatar.png"}
                 variant="rounded"
+                sx={{ width: 30, height: 30 }}
               />
             </IconButton>
           </Tooltip>
@@ -297,7 +301,15 @@ const MainHeader = () => {
             onClose={handleCloseUserMenu}
           >
             {USER_MENU_KEYS.map((key) => (
-              <MenuItem key={key} onClick={handleCloseUserMenu}>
+              <MenuItem
+                key={key}
+                onClick={() => {
+                  handleCloseUserMenu();
+                  if (key === "userMenu.manageProfiles") {
+                    navigate(`/${MAIN_PATH.manageProfiles}`);
+                  }
+                }}
+              >
                 <Typography textAlign="center" sx={{ color: "text.primary" }}>
                   {t(key)}
                 </Typography>

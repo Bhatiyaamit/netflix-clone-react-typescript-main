@@ -5,14 +5,14 @@ export default function MaturityRate({ children }: { children: ReactNode }) {
   return (
     <Box
       sx={{
-        py: 1,
-        pl: 1.5,
-        pr: 3,
-        fontSize: 22,
+        py: { xs: 0.3, sm: 1 },
+        pl: { xs: 0.8, sm: 1.5 },
+        pr: { xs: 1.5, sm: 3 },
+        fontSize: { xs: 12, sm: 22 },
         display: "flex",
-        alignItem: "center",
+        alignItems: "center",
         color: "text.primary",
-        border: "3px #dcdcdc",
+        border: { xs: "2px #dcdcdc", sm: "3px #dcdcdc" },
         borderLeftStyle: "solid",
         bgcolor: "#33333399",
       }}
