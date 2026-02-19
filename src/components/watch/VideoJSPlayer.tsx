@@ -33,11 +33,14 @@ export default function VideoJSPlayer({
           options.youtube = {
             ...options.youtube,
             ytControls: 0,
+            fs: 0,
             modestbranding: 1,
             rel: 0,
             showinfo: 0,
             iv_load_policy: 3,
+            cc_load_policy: 0,
             disablekb: 1,
+            playsinline: 1,
           };
         }
 
@@ -103,8 +106,19 @@ export default function VideoJSPlayer({
   }, [playerRef]);
 
   return (
-    <div data-vjs-player>
-      <div ref={videoRef} />
+    <div data-vjs-player style={{ position: "relative", overflow: "hidden" }}>
+      <div
+        ref={videoRef}
+        style={
+          disableInteraction
+            ? {
+                // Clip the top ~60px of the YouTube iframe to hide the title/share overlay
+                clipPath: "inset(60px 0 0 0)",
+                marginTop: "-60px",
+              }
+            : undefined
+        }
+      />
     </div>
   );
 }
