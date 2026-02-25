@@ -14,7 +14,6 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LanguageIcon from "@mui/icons-material/Language";
-<<<<<<< HEAD
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -29,14 +28,6 @@ import { MAIN_PATH } from "src/constant";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/providers/AuthProvider";
 import { useEffect } from "react";
-=======
-import { useGoogleLogin } from "@react-oauth/google";
-import axios from "axios";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import GoogleIcon from "@mui/icons-material/Google";
-import { MAIN_PATH } from "src/constant";
-import { useTranslation } from "react-i18next";
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
 
 const SIGNIN_FOOTER_LINK_KEYS = [
   "footer.faq",
@@ -51,7 +42,6 @@ const SIGNIN_FOOTER_LINK_KEYS = [
 ] as const;
 
 export function Component() {
-<<<<<<< HEAD
   const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState(searchParams.get("email") || "");
@@ -69,13 +59,6 @@ export function Component() {
   }, [searchParams]);
 
   const googleLogin = useGoogleLogin({
-=======
-  const [showPassword, setShowPassword] = useState(false);
-  const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
-
-  const login = useGoogleLogin({
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
     onSuccess: async (tokenResponse) => {
       try {
         const userInfo = await axios.get(
@@ -91,7 +74,6 @@ export function Component() {
         if (userInfo.data.name) {
           localStorage.setItem("userName", userInfo.data.name);
         }
-<<<<<<< HEAD
         // Authenticate via backend to get a JWT token
         await authGoogleLogin(
           userInfo.data.email,
@@ -109,14 +91,6 @@ export function Component() {
       console.log("Login Failed");
       setError("Failed to sign in with Google");
     },
-=======
-        navigate(`/${MAIN_PATH.browse}`);
-      } catch (error) {
-        console.error("Failed to fetch user data", error);
-      }
-    },
-    onError: () => console.log("Login Failed"),
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
   });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -127,7 +101,6 @@ export function Component() {
     event.preventDefault();
   };
 
-<<<<<<< HEAD
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -149,8 +122,6 @@ export function Component() {
     }
   };
 
-=======
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
   return (
     <Box
       sx={{
@@ -226,7 +197,6 @@ export function Component() {
             {t("signIn.title")}
           </Typography>
 
-<<<<<<< HEAD
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
               {error}
@@ -245,13 +215,6 @@ export function Component() {
               }}
               fullWidth
               disabled={isLoading}
-=======
-          <Stack spacing={2}>
-            <TextField
-              variant="filled"
-              label={t("signIn.emailLabel")}
-              fullWidth
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
               InputLabelProps={{
                 style: { color: "#8c8c8c" },
               }}
@@ -273,7 +236,6 @@ export function Component() {
               variant="filled"
               label={t("signIn.passwordLabel")}
               type={showPassword ? "text" : "password"}
-<<<<<<< HEAD
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
@@ -281,9 +243,6 @@ export function Component() {
               }}
               fullWidth
               disabled={isLoading}
-=======
-              fullWidth
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
               InputLabelProps={{
                 style: { color: "#8c8c8c" },
               }}
@@ -317,11 +276,8 @@ export function Component() {
             <Button
               variant="contained"
               fullWidth
-<<<<<<< HEAD
               type="submit"
               disabled={isLoading}
-=======
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
               sx={{
                 bgcolor: "#e50914",
                 color: "#fff",
@@ -331,7 +287,6 @@ export function Component() {
                 mt: 1,
                 textTransform: "none",
                 "&:hover": { bgcolor: "#f40612" },
-<<<<<<< HEAD
                 "&:disabled": { bgcolor: "#666" },
               }}
             >
@@ -340,23 +295,14 @@ export function Component() {
               ) : (
                 t("signIn.signInButton")
               )}
-=======
-              }}
-            >
-              {t("signIn.signInButton")}
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
             </Button>
 
             <Button
               variant="contained"
               fullWidth
               startIcon={<GoogleIcon />}
-<<<<<<< HEAD
               onClick={() => googleLogin()}
               disabled={isLoading}
-=======
-              onClick={() => login()}
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
               sx={{
                 bgcolor: "#fff",
                 color: "#000",
@@ -366,10 +312,7 @@ export function Component() {
                 mt: 1,
                 textTransform: "none",
                 "&:hover": { bgcolor: "#e6e6e6" },
-<<<<<<< HEAD
                 "&:disabled": { bgcolor: "#ccc" },
-=======
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
               }}
             >
               {t("signIn.signInWithGoogle")}
@@ -408,7 +351,6 @@ export function Component() {
           <Box mt={4}>
             <Typography color="#737373" fontSize="1rem">
               {t("signIn.newToNetflix")}{" "}
-<<<<<<< HEAD
               <Link
                 component={RouterLink}
                 to={`/${MAIN_PATH.signup}`}
@@ -416,9 +358,6 @@ export function Component() {
                 color="#fff"
                 fontWeight="500"
               >
-=======
-              <Link href="#" underline="hover" color="#fff" fontWeight="500">
->>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
                 {t("signIn.signUpNow")}
               </Link>
             </Typography>
