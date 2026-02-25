@@ -1,0 +1,49 @@
+/* Netflix Sans Font Family with Fallbacks */
+/* Font files (.woff2, .woff) can be placed in this directory if available */
+/* Uses system fonts as fallback */
+
+@font-face {
+  font-family: "Netflix Sans";
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src:
+    url("./NetflixSans-Light.woff2") format("woff2"),
+    url("./NetflixSans-Light.woff") format("woff");
+  /* Fallback handled by font-family stack */
+}
+
+@font-face {
+  font-family: "Netflix Sans";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src:
+    url("./NetflixSans-Regular.woff2") format("woff2"),
+    url("./NetflixSans-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Netflix Sans";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src:
+    url("./NetflixSans-Medium.woff2") format("woff2"),
+    url("./NetflixSans-Medium.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Netflix Sans";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src:
+    url("./NetflixSans-Bold.woff2") format("woff2"),
+    url("./NetflixSans-Bold.woff") format("woff");
+}
+
+/* Fallback font stack in case Netflix Sans fonts are not available */
+body {
+  font-family: "Netflix Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+}

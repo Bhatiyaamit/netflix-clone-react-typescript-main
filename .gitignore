@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+/client/dist
+/client/build
+/server/dist
+/server/build
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+.env.test.local
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Firebase
+.firebase
+.firebaserc
+
+# Vercel
+.vercel
+.vercel/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
+dist-ssr/
+*.local
+
+# Vite specific
+.vite/
