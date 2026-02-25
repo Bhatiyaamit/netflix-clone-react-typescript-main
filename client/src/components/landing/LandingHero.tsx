@@ -11,10 +11,142 @@ import InputAdornment from "@mui/material/InputAdornment";
 import LanguageIcon from "@mui/icons-material/Language";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { authAPI } from "src/services/authAPI";
+import Alert from "@mui/material/Alert";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import GoogleIcon from "@mui/icons-material/Google";
 
 export default function LandingHero() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        console.log("=== Google Login Flow ===");
+        console.log("Step 1: Fetching user info from Google...");
+
+        const userInfo = await axios.get(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+          },
+        );
+
+        console.log("Step 2: User info received:", userInfo.data);
+
+        // Persist user info to localStorage
+        if (userInfo.data.picture) {
+          localStorage.setItem("userPicture", userInfo.data.picture);
+          console.log("✓ User picture saved");
+        }
+        if (userInfo.data.name) {
+          localStorage.setItem("userName", userInfo.data.name);
+          console.log("✓ User name saved");
+        }
+        if (userInfo.data.email) {
+          localStorage.setItem("userEmail", userInfo.data.email);
+          console.log("✓ User email saved");
+        }
+
+        setError("");
+        console.log("Step 3: Redirecting to browse page...");
+
+        // Use window.location.href to ensure the redirect works
+        setTimeout(() => {
+          window.location.href = `/${MAIN_PATH.browse}`;
+        }, 300);
+      } catch (err: any) {
+        console.error("✗ Google login error:", err);
+        setError("Failed to sign in with Google. Please try again.");
+      }
+    },
+    onError: () => {
+      console.log("✗ Google Login Failed - User cancelled or error occurred");
+      setError("Failed to sign in with Google. Please try again.");
+    },
+  });
+
+  const handleGetStarted = async () => {
+    setError("");
+
+    if (!email) {
+      setError(t("hero.emailRequired") || "Please enter an email");
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError(t("hero.invalidEmail") || "Please enter a valid email");
+      return;
+    }
+
+    setLoading(true);
+    console.log("=== Get Started Flow ===");
+    console.log("Email entered:", email);
+
+    try {
+      // Step 1: Check if user exists
+      console.log("Step 1: Checking if user exists...");
+      const userCheckResponse = await authAPI.checkUserExists(email);
+      console.log("User exists response:", userCheckResponse);
+
+      if (!userCheckResponse.exists) {
+        // User doesn't exist, redirect to signup with email
+        console.log("✓ User does NOT exist. Redirecting to signup...");
+        setTimeout(() => {
+          window.location.href = `/${MAIN_PATH.signup}?email=${encodeURIComponent(email)}`;
+        }, 200);
+        return;
+      }
+
+      // Step 2: User exists, check for valid token/cookie
+      console.log("Step 2: User exists. Checking for valid token...");
+      try {
+        const tokenResponse = await authAPI.verifyToken();
+        console.log("Token verification response:", tokenResponse);
+
+        if (tokenResponse.valid) {
+          // Token is valid, save auth data and redirect to browse
+          console.log("✓ Valid token found. Saving auth data...");
+          if (tokenResponse.user && tokenResponse.token) {
+            authAPI.setAuthData(tokenResponse.token, tokenResponse.user);
+          }
+          console.log("✓ Redirecting to browse...");
+          setTimeout(() => {
+            window.location.href = `/${MAIN_PATH.browse}`;
+          }, 200);
+          return;
+        } else {
+          // User exists but no valid token, redirect to signin
+          console.log("✗ No valid token found. Redirecting to signin...");
+          setTimeout(() => {
+            window.location.href = `/${MAIN_PATH.signin}?email=${encodeURIComponent(email)}`;
+          }, 200);
+          return;
+        }
+      } catch (tokenErr: any) {
+        // Error verifying token, redirect to signin
+        console.log("✗ Token verification error:", tokenErr.message);
+        setTimeout(() => {
+          window.location.href = `/${MAIN_PATH.signin}?email=${encodeURIComponent(email)}`;
+        }, 200);
+        return;
+      }
+    } catch (err: any) {
+      console.error("Get started error:", err);
+      setError(
+        err.response?.data?.message || "An error occurred. Please try again.",
+      );
+      setLoading(false);
+    }
+  };
 
   return (
     <Box
@@ -162,9 +294,13 @@ export default function LandingHero() {
           sx={{ width: "100%", maxWidth: "600px", mt: 2 }}
         >
           <TextField
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && handleGetStarted()}
             variant="filled"
             label={t("hero.emailLabel")}
             fullWidth
+            disabled={loading}
             InputLabelProps={{
               style: { color: "#b3b3b3" },
             }}
@@ -192,6 +328,8 @@ export default function LandingHero() {
           <Button
             variant="contained"
             endIcon={<ArrowForwardIosIcon fontSize="small" />}
+            onClick={handleGetStarted}
+            disabled={loading}
             sx={{
               bgcolor: "#e50914",
               color: "#fff",
@@ -202,11 +340,21 @@ export default function LandingHero() {
               minWidth: "200px",
               height: "56px",
               "&:hover": { bgcolor: "#f40612" },
+              "&:disabled": { bgcolor: "#999" },
             }}
           >
-            {t("hero.getStarted")}
+            {loading ? "..." : t("hero.getStarted")}
           </Button>
         </Stack>
+
+        {error && (
+          <Alert
+            severity="error"
+            sx={{ mt: 2, maxWidth: "600px", width: "100%" }}
+          >
+            {error}
+          </Alert>
+        )}
       </Box>
     </Box>
   );

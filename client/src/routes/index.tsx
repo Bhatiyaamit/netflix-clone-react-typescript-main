@@ -68,6 +68,10 @@ const router = createBrowserRouter([
     path: MAIN_PATH.signin,
     lazy: () => import("src/pages/SignInPage"),
   },
+  {
+    path: MAIN_PATH.signup,
+    lazy: () => import("src/pages/SignUpPage"),
+  },
 ]);
 
 export default router;

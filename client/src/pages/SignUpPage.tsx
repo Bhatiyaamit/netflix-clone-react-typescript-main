@@ -3,9 +3,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -14,14 +11,16 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LanguageIcon from "@mui/icons-material/Language";
-import { useGoogleLogin } from "@react-oauth/google";
-import axios from "axios";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import GoogleIcon from "@mui/icons-material/Google";
-import { MAIN_PATH } from "src/constant";
+import Link from "@mui/material/Link";
+import { Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "src/providers/AuthProvider";
+import { MAIN_PATH } from "src/constant";
+import { useEffect } from "react";
 
-const SIGNIN_FOOTER_LINK_KEYS = [
+const SIGNUP_FOOTER_LINK_KEYS = [
   "footer.faq",
   "footer.helpCenter",
   "footer.termsOfUse",
@@ -34,40 +33,97 @@ const SIGNIN_FOOTER_LINK_KEYS = [
 ] as const;
 
 export function Component() {
+  const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: searchParams.get("email") || "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { signup, isLoading } = useAuth();
 
-  const login = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const userInfo = await axios.get(
-          "https://www.googleapis.com/oauth2/v3/userinfo",
-          {
-            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-          },
-        );
-        // Persist user picture for MainHeader
-        if (userInfo.data.picture) {
-          localStorage.setItem("userPicture", userInfo.data.picture);
-        }
-        if (userInfo.data.name) {
-          localStorage.setItem("userName", userInfo.data.name);
-        }
-        navigate(`/${MAIN_PATH.browse}`);
-      } catch (error) {
-        console.error("Failed to fetch user data", error);
-      }
-    },
-    onError: () => console.log("Login Failed"),
-  });
+  useEffect(() => {
+    const emailFromParams = searchParams.get("email");
+    if (emailFromParams) {
+      setFormData((prev) => ({
+        ...prev,
+        email: emailFromParams,
+      }));
+    }
+  }, [searchParams]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setError("");
+    setSuccess("");
+  };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
+  };
+
+  const validateForm = () => {
+    if (!formData.name.trim()) {
+      setError("Name is required");
+      return false;
+    }
+    if (!formData.email.trim()) {
+      setError("Email is required");
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setError("Invalid email format");
+      return false;
+    }
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return false;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      await signup(formData.name, formData.email, formData.password);
+      setSuccess("Account created successfully! Redirecting...");
+      setTimeout(() => {
+        navigate(`/${MAIN_PATH.browse}`);
+      }, 2000);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to create account. Please try again.",
+      );
+    }
   };
 
   return (
@@ -119,7 +175,7 @@ export function Component() {
         </RouterLink>
       </Box>
 
-      {/* Main Content - Sign In Form */}
+      {/* Main Content - Sign Up Form */}
       <Box
         sx={{
           flexGrow: 1,
@@ -142,14 +198,30 @@ export function Component() {
           }}
         >
           <Typography variant="h4" component="h1" fontWeight="700" mb={3}>
-            {t("signIn.title")}
+            Sign Up
           </Typography>
 
-          <Stack spacing={2}>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          {success && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              {success}
+            </Alert>
+          )}
+
+          <Stack spacing={2} component="form" onSubmit={handleSignUp}>
             <TextField
               variant="filled"
-              label={t("signIn.emailLabel")}
+              label="Full Name"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
               fullWidth
+              disabled={isLoading}
               InputLabelProps={{
                 style: { color: "#8c8c8c" },
               }}
@@ -169,9 +241,39 @@ export function Component() {
 
             <TextField
               variant="filled"
-              label={t("signIn.passwordLabel")}
-              type={showPassword ? "text" : "password"}
+              label="Email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
               fullWidth
+              disabled={isLoading}
+              InputLabelProps={{
+                style: { color: "#8c8c8c" },
+              }}
+              InputProps={{
+                style: { color: "#fff", backgroundColor: "#333" },
+              }}
+              sx={{
+                "& .MuiFilledInput-root": {
+                  borderRadius: "4px",
+                  backgroundColor: "#333",
+                  "&:hover": { backgroundColor: "#333" },
+                  "&.Mui-focused": { backgroundColor: "#454545" },
+                  "&:before, &:after": { borderBottom: "none !important" },
+                },
+              }}
+            />
+
+            <TextField
+              variant="filled"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              fullWidth
+              disabled={isLoading}
               InputLabelProps={{
                 style: { color: "#8c8c8c" },
               }}
@@ -202,9 +304,50 @@ export function Component() {
               }}
             />
 
+            <TextField
+              variant="filled"
+              label="Confirm Password"
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              fullWidth
+              disabled={isLoading}
+              InputLabelProps={{
+                style: { color: "#8c8c8c" },
+              }}
+              InputProps={{
+                style: { color: "#fff", backgroundColor: "#333" },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowConfirmPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      sx={{ color: "#8c8c8c" }}
+                    >
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& .MuiFilledInput-root": {
+                  borderRadius: "4px",
+                  backgroundColor: "#333",
+                  "&:hover": { backgroundColor: "#333" },
+                  "&.Mui-focused": { backgroundColor: "#454545" },
+                  "&:before, &:after": { borderBottom: "none !important" },
+                },
+              }}
+            />
+
             <Button
               variant="contained"
               fullWidth
+              type="submit"
+              disabled={isLoading}
               sx={{
                 bgcolor: "#e50914",
                 color: "#fff",
@@ -214,72 +357,40 @@ export function Component() {
                 mt: 1,
                 textTransform: "none",
                 "&:hover": { bgcolor: "#f40612" },
+                "&:disabled": { bgcolor: "#666" },
               }}
             >
-              {t("signIn.signInButton")}
+              {isLoading ? (
+                <CircularProgress size={24} sx={{ color: "#fff" }} />
+              ) : (
+                "Sign Up"
+              )}
             </Button>
-
-            <Button
-              variant="contained"
-              fullWidth
-              startIcon={<GoogleIcon />}
-              onClick={() => login()}
-              sx={{
-                bgcolor: "#fff",
-                color: "#000",
-                fontWeight: "700",
-                fontSize: "1rem",
-                py: 1.5,
-                mt: 1,
-                textTransform: "none",
-                "&:hover": { bgcolor: "#e6e6e6" },
-              }}
-            >
-              {t("signIn.signInWithGoogle")}
-            </Button>
-
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              sx={{ color: "#b3b3b3", fontSize: "0.8rem" }}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    size="small"
-                    defaultChecked
-                    sx={{
-                      color: "#b3b3b3",
-                      p: 0.5,
-                      "&.Mui-checked": { color: "#b3b3b3" },
-                    }}
-                  />
-                }
-                label={
-                  <Typography fontSize="0.8rem">
-                    {t("signIn.rememberMe")}
-                  </Typography>
-                }
-              />
-              <Link href="#" underline="hover" color="inherit">
-                {t("signIn.needHelp")}
-              </Link>
-            </Stack>
           </Stack>
 
           <Box mt={4}>
             <Typography color="#737373" fontSize="1rem">
-              {t("signIn.newToNetflix")}{" "}
-              <Link href="#" underline="hover" color="#fff" fontWeight="500">
-                {t("signIn.signUpNow")}
+              Already have an account?{" "}
+              <Link
+                component={RouterLink}
+                to={`/${MAIN_PATH.signin}`}
+                underline="hover"
+                color="#fff"
+                fontWeight="500"
+              >
+                Sign In
               </Link>
             </Typography>
             <Typography color="#8c8c8c" fontSize="0.8rem" mt={2}>
-              {t("signIn.recaptcha")}{" "}
+              By signing up, you agree to our{" "}
               <Link href="#" underline="hover" color="#0071eb">
-                {t("signIn.learnMore")}
+                Terms of Use
+              </Link>{" "}
+              and{" "}
+              <Link href="#" underline="hover" color="#0071eb">
+                Privacy Policy
               </Link>
+              .
             </Typography>
           </Box>
         </Box>
@@ -296,7 +407,7 @@ export function Component() {
           mt: "auto",
         }}
       >
-        <Typography mb={1}>{t("signIn.questionsContact")}</Typography>
+        <Typography mb={1}>Questions? Contact us.</Typography>
         <Box
           sx={{
             display: "grid",
@@ -306,7 +417,7 @@ export function Component() {
             mb: 2,
           }}
         >
-          {SIGNIN_FOOTER_LINK_KEYS.map((key) => (
+          {SIGNUP_FOOTER_LINK_KEYS.map((key) => (
             <Link key={key} href="#" underline="hover" color="inherit">
               {t(key)}
             </Link>
@@ -345,4 +456,4 @@ export function Component() {
   );
 }
 
-Component.displayName = "SignInPage";
+Component.displayName = "SignUpPage";

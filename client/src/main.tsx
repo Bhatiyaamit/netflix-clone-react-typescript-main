@@ -17,6 +17,7 @@ import router from "./routes";
 import MainLoadingScreen from "./components/MainLoadingScreen";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GOOGLE_CLIENT_ID } from "./constant";
+import { AuthProvider } from "./providers/AuthProvider";
 
 store.dispatch(extendedApi.endpoints.getConfiguration.initiate(undefined));
 
@@ -25,15 +26,18 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-    <Provider store={store}>
-      <React.StrictMode>
-        <ThemeProvider theme={createTheme({ palette, typography })}>
-          <RouterProvider
-            router={router}
-            fallbackElement={<MainLoadingScreen />}
-           />
-        </ThemeProvider>
-      </React.StrictMode>
-    </Provider>
+    <AuthProvider>
+      <Provider store={store}>
+        <React.StrictMode>
+          <ThemeProvider theme={createTheme({ palette, typography })}>
+            <RouterProvider
+              router={router}
+              fallbackElement={<MainLoadingScreen />}
+             />
+          </ThemeProvider>
+        </React.StrictMode>
+      </Provider>
+    </AuthProvider>
   </GoogleOAuthProvider>,
 );
+

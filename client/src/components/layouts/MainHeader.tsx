@@ -20,6 +20,7 @@ import Logo from "../Logo";
 import SearchBox from "../SearchBox";
 import NetflixNavigationLink from "../NetflixNavigationLink";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "src/providers/AuthProvider";
 
 const NAV_LINK_KEYS = [
   { key: "nav.home", path: `/${MAIN_PATH.browse}` },
@@ -42,6 +43,7 @@ const MainHeader = () => {
   const location = useLocation();
   const isOffset = useOffSetTop(APP_BAR_HEIGHT);
   const { t, i18n } = useTranslation();
+  const { logout, user } = useAuth();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
@@ -80,8 +82,7 @@ const MainHeader = () => {
   const handleSignOut = () => {
     handleCloseUserMenu();
     googleLogout();
-    localStorage.removeItem("userPicture");
-    localStorage.removeItem("userName");
+    logout();
     navigate(`/${MAIN_PATH.signin}`);
   };
 
