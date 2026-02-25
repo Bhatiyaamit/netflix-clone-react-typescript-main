@@ -16,7 +16,10 @@ export const MAIN_PATH = {
   search: "search",
   manageProfiles: "manage-profiles",
   signin: "signin",
+<<<<<<< HEAD
   signup: "signup",
+=======
+>>>>>>> d20e3c099416922636c02e00dbd948948330fbbd
 };
 
 export const ARROW_MAX_WIDTH = 60;
